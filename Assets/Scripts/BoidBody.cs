@@ -6,15 +6,18 @@ namespace Boids
 {
     public class BoidBody : MonoBehaviour
     {
+        public BoidSettings boidSettings;
+
         private Vector3 velocity;
-        [SerializeField]
-        private float turnSpeed;
+        private Vector3 acceleration;
 
         public event System.Action onDestroy;
 
         private void Start()
         {
             BoidsManager.Instance.AddBoid(this);
+
+            velocity = transform.forward * ((boidSettings.maxSpeed + boidSettings.minSpeed) / 2f);
         }
 
         private void OnDestroy()
@@ -28,7 +31,16 @@ namespace Boids
             {
                 position = transform.position,
                 velocity = velocity,
-                turnSpeed = turnSpeed
+                acceleration = acceleration,
+                dir = transform.forward,
+                minSpeed = boidSettings.minSpeed,
+                maxSpeed = boidSettings.maxSpeed,
+                viewRadius = boidSettings.viewRadius,
+                maxSteerForce = boidSettings.maxSteerForce,
+                alignWeight = boidSettings.alignWeight,
+                cohesionWeight = boidSettings.cohesionWeight,
+                seperateWeight = boidSettings.seperateWeight,
+                avoidanceRadius = boidSettings.avoidanceRadius
             };
         }
 
@@ -36,8 +48,8 @@ namespace Boids
         {
             transform.position = boidData.position;
             velocity = boidData.velocity;
-            //transform.forward = velocity.normalized;
-            transform.LookAt(velocity.normalized + transform.position);
+            acceleration = boidData.acceleration;
+            transform.forward = boidData.dir;
         }
     }
 
@@ -45,12 +57,23 @@ namespace Boids
     {
         public Vector3 position;
         public Vector3 velocity;
-        public float turnSpeed;
+        public Vector3 acceleration;
+        public Vector3 dir;
         public int listIndex;
+
+        public float minSpeed;
+        public float maxSpeed;
+        public float maxSteerForce;
+        public float viewRadius;
+
+        public float alignWeight;
+        public float cohesionWeight;
+        public float seperateWeight;
+        public float avoidanceRadius;
 
         public static int GetSize()
         {
-            return sizeof(float) * 7 + sizeof(int);
+            return sizeof(float) * 20 + sizeof(int) * 1;
         }
     }
 }

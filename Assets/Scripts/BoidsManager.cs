@@ -43,7 +43,6 @@ namespace Boids
 
             var boidsBuffer = SetUpBoidsData(out var boidsCount);
 
-            boidComputeShader.SetFloat("time", Time.time);
             boidComputeShader.SetFloat("deltaTime", Time.deltaTime);
 
             int numThreadsX = Mathf.CeilToInt(boidsCount / 256f);
@@ -80,16 +79,16 @@ namespace Boids
                 boidDatas.Add(boidData);
             }
 
-            ComputeBuffer buffer = new ComputeBuffer(boidDatas.Count, BoidData.GetSize());
-            buffer.SetData(boidDatas);
-            boidComputeShader.SetBuffer(0, "boids", buffer);
+            ComputeBuffer boidsBuffer = new ComputeBuffer(boidDatas.Count, BoidData.GetSize());
+            boidsBuffer.SetData(boidDatas);
+            boidComputeShader.SetBuffer(0, "boids", boidsBuffer);
             boidComputeShader.SetInt("numBoids", boidDatas.Count);
 
-            buffersToDispose.Add(buffer);
+            buffersToDispose.Add(boidsBuffer);
 
             boidsCount = boidDatas.Count;
 
-            return buffer;
+            return boidsBuffer;
         }
     }
 }

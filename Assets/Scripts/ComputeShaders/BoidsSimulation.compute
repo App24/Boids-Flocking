@@ -5,26 +5,99 @@ struct Boid
 {
     float3 position;
     float3 velocity;
-    float turnSpeed;
+    float3 acceleration;
+    float3 dir;
     int listIndex;
+    float minSpeed;
+    float maxSpeed;
+    float maxSteerForce;
+    float viewRadius;
+    float alignWeight;
+    float cohesionWeight;
+    float seperateWeight;
+    float avoidanceRadius;
 };
 
 RWStructuredBuffer<Boid> boids;
 int numBoids;
 
-float time;
-
 float deltaTime;
+
+float3 ClampMagniute(in float3 v, float mag)
+{
+    float clampedLength = clamp(length(v), -mag, mag);
+    v = normalize(v) * clampedLength;
+    return v;
+}
+
+float3 SteerTowards(float3 vec, Boid boid)
+{
+    float3 v = normalize(vec) * boid.maxSpeed - boid.velocity;
+    v = ClampMagniute(v, boid.maxSteerForce);
+    return v;
+}
+
+void UpdateBoid(inout Boid boid, float3 flockCentre, int numFlockmates, float3 avgFlockHeading, float3 avgAvoidanceHeading)
+{
+    float3 acceleration = 0;
+    
+    if (numFlockmates != 0)
+    {
+        float3 centre = flockCentre / numFlockmates;
+        float3 cohesionPosition = centre - boid.position;
+        if (length(cohesionPosition) == 0)
+        {
+            cohesionPosition = float3(0.00001, 0.00001, 0.00001);
+        }
+    
+        acceleration += SteerTowards(avgFlockHeading, boid) * boid.alignWeight;
+        acceleration += SteerTowards(cohesionPosition, boid) * boid.cohesionWeight;
+        acceleration += SteerTowards(avgAvoidanceHeading, boid) * boid.seperateWeight;
+    }
+    
+    float3 velocity = boid.velocity + (acceleration * deltaTime);
+    float speed = length(velocity);
+    speed = clamp(speed, boid.minSpeed, boid.maxSpeed);
+    float3 dir = velocity / speed;
+    velocity = dir * speed;
+    
+    boid.velocity = velocity;
+    boid.dir = dir;
+    boid.position += velocity * deltaTime;
+}
 
 [numthreads(256,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
+    int numFlockmates = 0;
+    float3 flockCentre = 0.00001;
+    float3 avgFlockHeading = 0.0001;
+    float3 avgAvoidanceHeading = 0.0001;
     Boid boid = boids[id.x];
-    
-    boid.velocity = float3(0, sin(time + id.x), 0);
-    
-    float3 prevPosition = boid.position;
-    boid.position = prevPosition + (boid.velocity * deltaTime);
-    
-    boids[id.x] = boid;
+    for (uint i = 0; i < numBoids; i++)
+    {
+        if (boids[id.x].listIndex != i)
+        {
+            Boid otherBoid = boids[i];
+            float3 offset = otherBoid.position - boid.position;
+            if (length(offset) == 0)
+            {
+                offset = float3(0.00001, 0.00001, 0.00001);
+            }
+            float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+            
+            if (sqrDst < boid.viewRadius * boid.viewRadius)
+            {
+                numFlockmates += 1;
+                flockCentre += boid.position;
+                avgFlockHeading += boid.dir;
+                
+                if (sqrDst < boid.avoidanceRadius * boid.avoidanceRadius)
+                {
+                    avgAvoidanceHeading -= offset / sqrDst;
+                }
+            }
+        }
+    }
+    UpdateBoid(boids[id.x], flockCentre, numFlockmates, avgFlockHeading, avgAvoidanceHeading);
 }
