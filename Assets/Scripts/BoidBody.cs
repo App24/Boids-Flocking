@@ -11,18 +11,20 @@ namespace Boids
         private Vector3 velocity;
         private Vector3 acceleration;
 
-        public event System.Action onDestroy;
-
         private void Start()
         {
-            BoidsManager.Instance.AddBoid(this);
 
             velocity = transform.forward * ((boidSettings.maxSpeed + boidSettings.minSpeed) / 2f);
         }
 
-        private void OnDestroy()
+        private void OnEnable()
         {
-            onDestroy?.Invoke();
+            BoidsManager.Instance.AddBoid(this);
+        }
+
+        private void OnDisable()
+        {
+            BoidsManager.Instance.RemoveBoid(this);
         }
 
         public BoidData ToBoidData()
@@ -32,15 +34,7 @@ namespace Boids
                 position = transform.position,
                 velocity = velocity,
                 acceleration = acceleration,
-                dir = transform.forward,
-                minSpeed = boidSettings.minSpeed,
-                maxSpeed = boidSettings.maxSpeed,
-                viewRadius = boidSettings.viewRadius,
-                maxSteerForce = boidSettings.maxSteerForce,
-                alignWeight = boidSettings.alignWeight,
-                cohesionWeight = boidSettings.cohesionWeight,
-                seperateWeight = boidSettings.seperateWeight,
-                avoidanceRadius = boidSettings.avoidanceRadius
+                dir = transform.forward
             };
         }
 
@@ -59,21 +53,12 @@ namespace Boids
         public Vector3 velocity;
         public Vector3 acceleration;
         public Vector3 dir;
-        public int listIndex;
-
-        public float minSpeed;
-        public float maxSpeed;
-        public float maxSteerForce;
-        public float viewRadius;
-
-        public float alignWeight;
-        public float cohesionWeight;
-        public float seperateWeight;
-        public float avoidanceRadius;
+        public uint listIndex;
+        public uint boidSettingIndex;
 
         public static int GetSize()
         {
-            return sizeof(float) * 20 + sizeof(int) * 1;
+            return sizeof(float) * 12 + sizeof(uint) * 2;
         }
     }
 }

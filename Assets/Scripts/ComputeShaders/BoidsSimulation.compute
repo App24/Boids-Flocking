@@ -7,37 +7,47 @@ struct Boid
     float3 velocity;
     float3 acceleration;
     float3 dir;
-    int listIndex;
+    uint listIndex;
+    uint boidSettingIndex;
+};
+
+struct BoidSettings {
     float minSpeed;
     float maxSpeed;
     float maxSteerForce;
     float viewRadius;
+    float avoidanceRadius;
     float alignWeight;
     float cohesionWeight;
     float seperateWeight;
-    float avoidanceRadius;
 };
 
 RWStructuredBuffer<Boid> boids;
-int numBoids;
+uint numBoids;
+
+StructuredBuffer<BoidSettings> boidSettings;
 
 float deltaTime;
 
 float3 ClampMagniute(in float3 v, float mag)
 {
+    if(length(v) == 0)
+        v = 0.0001;
     float clampedLength = clamp(length(v), -mag, mag);
     v = normalize(v) * clampedLength;
     return v;
 }
 
-float3 SteerTowards(float3 vec, Boid boid)
+float3 SteerTowards(float3 vec, Boid boid, BoidSettings settings)
 {
-    float3 v = normalize(vec) * boid.maxSpeed - boid.velocity;
-    v = ClampMagniute(v, boid.maxSteerForce);
+    if(length(vec) == 0)
+        vec = 0.0001;
+    float3 v = normalize(vec) * settings.maxSpeed - boid.velocity;
+    v = ClampMagniute(v, settings.maxSteerForce);
     return v;
 }
 
-void UpdateBoid(inout Boid boid, float3 flockCentre, int numFlockmates, float3 avgFlockHeading, float3 avgAvoidanceHeading)
+void UpdateBoid(inout Boid boid, BoidSettings settings, float3 flockCentre, uint numFlockmates, float3 avgFlockHeading, float3 avgAvoidanceHeading)
 {
     float3 acceleration = 0;
     
@@ -45,19 +55,15 @@ void UpdateBoid(inout Boid boid, float3 flockCentre, int numFlockmates, float3 a
     {
         float3 centre = flockCentre / numFlockmates;
         float3 cohesionPosition = centre - boid.position;
-        if (length(cohesionPosition) == 0)
-        {
-            cohesionPosition = float3(0.00001, 0.00001, 0.00001);
-        }
     
-        acceleration += SteerTowards(avgFlockHeading, boid) * boid.alignWeight;
-        acceleration += SteerTowards(cohesionPosition, boid) * boid.cohesionWeight;
-        acceleration += SteerTowards(avgAvoidanceHeading, boid) * boid.seperateWeight;
+        acceleration += SteerTowards(avgFlockHeading, boid, settings) * settings.alignWeight;
+        acceleration += SteerTowards(cohesionPosition, boid, settings) * settings.cohesionWeight;
+        acceleration += SteerTowards(avgAvoidanceHeading, boid, settings) * settings.seperateWeight;
     }
     
     float3 velocity = boid.velocity + (acceleration * deltaTime);
     float speed = length(velocity);
-    speed = clamp(speed, boid.minSpeed, boid.maxSpeed);
+    speed = clamp(speed, settings.minSpeed, settings.maxSpeed);
     float3 dir = velocity / speed;
     velocity = dir * speed;
     
@@ -69,11 +75,12 @@ void UpdateBoid(inout Boid boid, float3 flockCentre, int numFlockmates, float3 a
 [numthreads(256,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    int numFlockmates = 0;
+    uint numFlockmates = 0;
     float3 flockCentre = 0.00001;
     float3 avgFlockHeading = 0.0001;
     float3 avgAvoidanceHeading = 0.0001;
     Boid boid = boids[id.x];
+    BoidSettings settings = boidSettings[boid.boidSettingIndex];
     for (uint i = 0; i < numBoids; i++)
     {
         if (boids[id.x].listIndex != i)
@@ -86,18 +93,18 @@ void CSMain (uint3 id : SV_DispatchThreadID)
             }
             float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
             
-            if (sqrDst < boid.viewRadius * boid.viewRadius)
+            if (sqrDst < settings.viewRadius * settings.viewRadius)
             {
                 numFlockmates += 1;
                 flockCentre += boid.position;
                 avgFlockHeading += boid.dir;
                 
-                if (sqrDst < boid.avoidanceRadius * boid.avoidanceRadius)
+                if (sqrDst < settings.avoidanceRadius * settings.avoidanceRadius)
                 {
                     avgAvoidanceHeading -= offset / sqrDst;
                 }
             }
         }
     }
-    UpdateBoid(boids[id.x], flockCentre, numFlockmates, avgFlockHeading, avgAvoidanceHeading);
+    UpdateBoid(boids[id.x], settings, flockCentre, numFlockmates, avgFlockHeading, avgAvoidanceHeading);
 }
