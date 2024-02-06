@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEditor.Build.Content;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Boids
 {
@@ -135,9 +136,49 @@ namespace Boids
                 for (int i = 0; i < boidsCount; i++)
                 {
                     var outBoid = boidsData[i];
-                    boids[(int)outBoid.listIndex].FromBoidData(outBoid);
+                    var boid = boids[(int)outBoid.listIndex];
+                    boid.FromBoidData(outBoid);
+                    var headingForCollision = IsHeadingForCollision(boid);
+                    outBoid.headingForCollision = (uint)(headingForCollision ? 1 : 0);
+                    if (headingForCollision)
+                    {
+                        outBoid.collisionAvoidDir = ObstacleRays(boid);
+                    }
+                    else
+                    {
+                        outBoid.collisionAvoidDir = Vector3.zero;
+                    }
+                    boidsData[i] = outBoid;
+                }
+
+                boidsBuffer.SetData(boidsData);
+                boidComputeShader.SetBuffer(0, "boids", boidsBuffer);
+            }
+        }
+
+        private bool IsHeadingForCollision(BoidBody boid)
+        {
+            RaycastHit hit;
+            if (Physics.SphereCast(boid.transform.position, 0.27f, boid.transform.forward, out hit, 20, Physics.AllLayers))
+                return true;
+            return false;
+        }
+
+        Vector3 ObstacleRays(BoidBody boid)
+        {
+            Vector3[] rayDirections = BoidHelper.directions;
+
+            for (int i = 0; i < rayDirections.Length; i++)
+            {
+                Vector3 dir = boid.transform.TransformDirection(rayDirections[i]);
+                Ray ray = new Ray(boid.transform.position, dir);
+                if (!Physics.SphereCast(ray, 0.27f, 20, Physics.AllLayers))
+                {
+                    return dir;
                 }
             }
+
+            return boid.transform.forward;
         }
 
         /*private ComputeBuffer SetUpBoidsData(out int boidsCount)
@@ -182,5 +223,33 @@ namespace Boids
 
             return boidsBuffer;
         }*/
+    }
+
+    public static class BoidHelper
+    {
+
+        const int numViewDirections = 300;
+        public static readonly Vector3[] directions;
+
+        static BoidHelper()
+        {
+            directions = new Vector3[BoidHelper.numViewDirections];
+
+            float goldenRatio = (1 + Mathf.Sqrt(5)) / 2;
+            float angleIncrement = Mathf.PI * 2 * goldenRatio;
+
+            for (int i = 0; i < numViewDirections; i++)
+            {
+                float t = (float)i / numViewDirections;
+                float inclination = Mathf.Acos(1 - 2 * t);
+                float azimuth = angleIncrement * i;
+
+                float x = Mathf.Sin(inclination) * Mathf.Cos(azimuth);
+                float y = Mathf.Sin(inclination) * Mathf.Sin(azimuth);
+                float z = Mathf.Cos(inclination);
+                directions[i] = new Vector3(x, y, z);
+            }
+        }
+
     }
 }

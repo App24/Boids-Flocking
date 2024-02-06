@@ -9,6 +9,8 @@ struct Boid
     float3 dir;
     uint listIndex;
     uint boidSettingIndex;
+    uint headingForCollision;
+    float3 collisionAvoidDir;
 };
 
 struct BoidSettings {
@@ -31,8 +33,6 @@ float deltaTime;
 
 float3 ClampMagniute(in float3 v, float mag)
 {
-    if(length(v) == 0)
-        v = 0.0001;
     float clampedLength = clamp(length(v), -mag, mag);
     v = normalize(v) * clampedLength;
     return v;
@@ -40,8 +40,8 @@ float3 ClampMagniute(in float3 v, float mag)
 
 float3 SteerTowards(float3 vec, Boid boid, BoidSettings settings)
 {
-    if(length(vec) == 0)
-        vec = 0.0001;
+    if (length(vec) == 0)
+        return vec;
     float3 v = normalize(vec) * settings.maxSpeed - boid.velocity;
     v = ClampMagniute(v, settings.maxSteerForce);
     return v;
@@ -61,6 +61,13 @@ void UpdateBoid(inout Boid boid, BoidSettings settings, float3 flockCentre, uint
         acceleration += SteerTowards(avgAvoidanceHeading, boid, settings) * settings.seperateWeight;
     }
     
+    if (boid.headingForCollision)
+    {
+        acceleration += SteerTowards(boid.collisionAvoidDir, boid, settings) * 5;
+    }
+    
+    if(length(boid.velocity) == 0)
+        boid.velocity = boid.dir * ((settings.minSpeed + settings.maxSpeed) / 2);
     float3 velocity = boid.velocity + (acceleration * deltaTime);
     float speed = length(velocity);
     speed = clamp(speed, settings.minSpeed, settings.maxSpeed);
@@ -76,9 +83,9 @@ void UpdateBoid(inout Boid boid, BoidSettings settings, float3 flockCentre, uint
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint numFlockmates = 0;
-    float3 flockCentre = 0.00001;
-    float3 avgFlockHeading = 0.0001;
-    float3 avgAvoidanceHeading = 0.0001;
+    float3 flockCentre = 0;
+    float3 avgFlockHeading = 0;
+    float3 avgAvoidanceHeading = 0;
     Boid boid = boids[id.x];
     BoidSettings settings = boidSettings[boid.boidSettingIndex];
     for (uint i = 0; i < numBoids; i++)
@@ -87,17 +94,13 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         {
             Boid otherBoid = boids[i];
             float3 offset = otherBoid.position - boid.position;
-            if (length(offset) == 0)
-            {
-                offset = float3(0.00001, 0.00001, 0.00001);
-            }
             float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
             
             if (sqrDst < settings.viewRadius * settings.viewRadius)
             {
                 numFlockmates += 1;
-                flockCentre += boid.position;
-                avgFlockHeading += boid.dir;
+                flockCentre += otherBoid.position;
+                avgFlockHeading += otherBoid.dir;
                 
                 if (sqrDst < settings.avoidanceRadius * settings.avoidanceRadius)
                 {

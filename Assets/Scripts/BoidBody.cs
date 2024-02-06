@@ -11,9 +11,8 @@ namespace Boids
         private Vector3 velocity;
         private Vector3 acceleration;
 
-        private void Start()
+        private void Awake()
         {
-
             velocity = transform.forward * ((boidSettings.maxSpeed + boidSettings.minSpeed) / 2f);
         }
 
@@ -34,7 +33,9 @@ namespace Boids
                 position = transform.position,
                 velocity = velocity,
                 acceleration = acceleration,
-                dir = transform.forward
+                dir = transform.forward,
+                headingForCollision = 0,
+                collisionAvoidDir = Vector3.zero
             };
         }
 
@@ -55,10 +56,12 @@ namespace Boids
         public Vector3 dir;
         public uint listIndex;
         public uint boidSettingIndex;
+        public uint headingForCollision;
+        public Vector3 collisionAvoidDir;
 
         public static int GetSize()
         {
-            return sizeof(float) * 12 + sizeof(uint) * 2;
+            return sizeof(float) * 15 + sizeof(uint) * 3;
         }
     }
 }
