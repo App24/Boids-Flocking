@@ -11,7 +11,7 @@ namespace Boids
         private Vector3 velocity;
         private Vector3 acceleration;
 
-        private void Awake()
+        private void Start()
         {
             velocity = transform.forward * ((boidSettings.maxSpeed + boidSettings.minSpeed) / 2f);
         }
@@ -33,9 +33,7 @@ namespace Boids
                 position = transform.position,
                 velocity = velocity,
                 acceleration = acceleration,
-                dir = transform.forward,
-                headingForCollision = 0,
-                collisionAvoidDir = Vector3.zero
+                dir = transform.forward
             };
         }
 
@@ -45,6 +43,17 @@ namespace Boids
             velocity = boidData.velocity;
             acceleration = boidData.acceleration;
             transform.forward = boidData.dir;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!boidSettings) return;
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, boidSettings.boundsRadius);
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, boidSettings.collisionAvoidDst);
         }
     }
 
@@ -56,12 +65,12 @@ namespace Boids
         public Vector3 dir;
         public uint listIndex;
         public uint boidSettingIndex;
-        public uint headingForCollision;
-        public Vector3 collisionAvoidDir;
+        /*public uint headingForCollision;
+        public Vector3 collisionAvoidDir;*/
 
         public static int GetSize()
         {
-            return sizeof(float) * 15 + sizeof(uint) * 3;
+            return sizeof(float) * 12 + sizeof(uint) * 2;
         }
     }
 }

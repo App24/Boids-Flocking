@@ -9,6 +9,10 @@ struct Boid
     float3 dir;
     uint listIndex;
     uint boidSettingIndex;
+};
+
+struct BoidCollisionData
+{
     uint headingForCollision;
     float3 collisionAvoidDir;
 };
@@ -22,11 +26,13 @@ struct BoidSettings {
     float alignWeight;
     float cohesionWeight;
     float seperateWeight;
+    float avoidCollisionWeight;
 };
 
 RWStructuredBuffer<Boid> boids;
 uint numBoids;
 
+StructuredBuffer<BoidCollisionData> boidCollisionData;
 StructuredBuffer<BoidSettings> boidSettings;
 
 float deltaTime;
@@ -47,7 +53,7 @@ float3 SteerTowards(float3 vec, Boid boid, BoidSettings settings)
     return v;
 }
 
-void UpdateBoid(inout Boid boid, BoidSettings settings, float3 flockCentre, uint numFlockmates, float3 avgFlockHeading, float3 avgAvoidanceHeading)
+void UpdateBoid(inout Boid boid, BoidSettings settings, BoidCollisionData collisionData, float3 flockCentre, uint numFlockmates, float3 avgFlockHeading, float3 avgAvoidanceHeading)
 {
     float3 acceleration = 0;
     
@@ -61,9 +67,9 @@ void UpdateBoid(inout Boid boid, BoidSettings settings, float3 flockCentre, uint
         acceleration += SteerTowards(avgAvoidanceHeading, boid, settings) * settings.seperateWeight;
     }
     
-    if (boid.headingForCollision)
+    if (collisionData.headingForCollision)
     {
-        acceleration += SteerTowards(boid.collisionAvoidDir, boid, settings) * 5;
+        acceleration += SteerTowards(collisionData.collisionAvoidDir, boid, settings) * settings.avoidCollisionWeight;
     }
     
     if(length(boid.velocity) == 0)
@@ -109,5 +115,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
             }
         }
     }
-    UpdateBoid(boids[id.x], settings, flockCentre, numFlockmates, avgFlockHeading, avgAvoidanceHeading);
+    
+    UpdateBoid(boids[id.x], settings, boidCollisionData[boid.listIndex], flockCentre, numFlockmates, avgFlockHeading, avgAvoidanceHeading);
 }

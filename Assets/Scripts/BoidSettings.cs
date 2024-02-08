@@ -18,6 +18,13 @@ namespace Boids
         public float cohesionWeight = 1;
         public float seperateWeight = 1;
 
+        public float avoidCollisionWeight = 1;
+
+        public float boundsRadius;
+        public float collisionAvoidDst;
+
+        public LayerMask collisonMask = Physics.AllLayers;
+
         public BoidSettingsData ToData()
         {
             return new BoidSettingsData()
@@ -29,8 +36,15 @@ namespace Boids
                 maxSpeed = maxSpeed,
                 maxSteerForce = maxSteerForce,
                 seperateWeight = seperateWeight,
-                viewRadius = viewRadius
+                viewRadius = viewRadius,
+                avoidCollisionWeight = avoidCollisionWeight
             };
+        }
+
+        private void OnValidate()
+        {
+            if (!Application.isPlaying) return;
+            BoidsManager.Instance.RecreateBoidsBuffer();
         }
     }
 
@@ -46,9 +60,11 @@ namespace Boids
         public float cohesionWeight;
         public float seperateWeight;
 
+        public float avoidCollisionWeight;
+
         public static int GetSize()
         {
-            return sizeof(float) * 8;
+            return sizeof(float) * 9;
         }
     }
 }

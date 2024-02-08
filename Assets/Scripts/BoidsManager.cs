@@ -19,6 +19,9 @@ namespace Boids
 
         private ComputeBuffer boidsBuffer;
         private ComputeBuffer boidSettingsBufffer;
+        private ComputeBuffer boidCollisionBuffer;
+
+        List<BoidCollisionData> boidCollisionDatas = new List<BoidCollisionData>();
 
         private void Awake()
         {
@@ -34,16 +37,28 @@ namespace Boids
         {
             boidsBuffer.Release();
             boidsBuffer = null;
+
+            boidSettingsBufffer.Release();
+            boidSettingsBufffer = null;
+
+            boidCollisionBuffer.Release();
+            boidCollisionBuffer = null;
         }
 
-        private void RecreateBoidsBuffer()
+        public void RecreateBoidsBuffer()
         {
             if(boidsBuffer != null)
             {
                 boidsBuffer.Release();
             }
 
+            if(boidCollisionBuffer != null)
+            {
+                boidCollisionBuffer.Release();
+            }
+
             var boidDatas = new List<BoidData>();
+            boidCollisionDatas.Clear();
 
             for (int i = 0; i < boids.Count; i++)
             {
@@ -53,6 +68,19 @@ namespace Boids
                 boidData.listIndex = (uint)i;
 
                 boidDatas.Add(boidData);
+
+                var headingCollision = IsHeadingForCollision(boid);
+                var dir = Vector3.zero;
+                if (headingCollision)
+                {
+                    dir = ObstacleRays(boid);
+                }
+
+                boidCollisionDatas.Add(new BoidCollisionData()
+                {
+                    collisionAvoidDir = dir,
+                    headingForCollision = (uint)(headingCollision ? 1 : 0)
+                });
             }
 
             RecreateBoidSettingsBuffer(boidDatas);
@@ -62,6 +90,10 @@ namespace Boids
                 boidsBuffer = new ComputeBuffer(boidDatas.Count, BoidData.GetSize());
                 boidsBuffer.SetData(boidDatas);
                 boidComputeShader.SetBuffer(0, "boids", boidsBuffer);
+
+                boidCollisionBuffer = new ComputeBuffer(boidCollisionDatas.Count, BoidCollisionData.GetSize());
+                boidCollisionBuffer.SetData(boidCollisionDatas);
+                boidComputeShader.SetBuffer(0, "boidCollisionData", boidCollisionBuffer);
             }
             boidComputeShader.SetInt("numBoids", boidDatas.Count);
         }
@@ -71,7 +103,6 @@ namespace Boids
             if (boidSettingsBufffer != null)
             {
                 boidSettingsBufffer.Release();
-                boidSettingsBufffer = null;
             }
 
             var boidSettingsDict = new Dictionary<BoidSettings, BoidSettingsData>();
@@ -139,27 +170,28 @@ namespace Boids
                     var boid = boids[(int)outBoid.listIndex];
                     boid.FromBoidData(outBoid);
                     var headingForCollision = IsHeadingForCollision(boid);
-                    outBoid.headingForCollision = (uint)(headingForCollision ? 1 : 0);
+                    var collisionData = boidCollisionDatas[(int)outBoid.listIndex];
+                    collisionData.headingForCollision = (uint)(headingForCollision ? 1 : 0);
                     if (headingForCollision)
                     {
-                        outBoid.collisionAvoidDir = ObstacleRays(boid);
+                        collisionData.collisionAvoidDir = ObstacleRays(boid);
                     }
                     else
                     {
-                        outBoid.collisionAvoidDir = Vector3.zero;
+                        collisionData.collisionAvoidDir = Vector3.zero;
                     }
-                    boidsData[i] = outBoid;
+                    boidCollisionDatas[(int)outBoid.listIndex] = collisionData;
                 }
 
-                boidsBuffer.SetData(boidsData);
-                boidComputeShader.SetBuffer(0, "boids", boidsBuffer);
+                boidCollisionBuffer.SetData(boidCollisionDatas);
+                boidComputeShader.SetBuffer(0, "boidCollisionData", boidCollisionBuffer);
             }
         }
 
         private bool IsHeadingForCollision(BoidBody boid)
         {
             RaycastHit hit;
-            if (Physics.SphereCast(boid.transform.position, 0.27f, boid.transform.forward, out hit, 20, Physics.AllLayers))
+            if (Physics.SphereCast(boid.transform.position, boid.boidSettings.boundsRadius, boid.transform.forward, out hit, boid.boidSettings.collisionAvoidDst, boid.boidSettings.collisonMask))
                 return true;
             return false;
         }
@@ -172,7 +204,7 @@ namespace Boids
             {
                 Vector3 dir = boid.transform.TransformDirection(rayDirections[i]);
                 Ray ray = new Ray(boid.transform.position, dir);
-                if (!Physics.SphereCast(ray, 0.27f, 20, Physics.AllLayers))
+                if (!Physics.SphereCast(ray, boid.boidSettings.boundsRadius, boid.boidSettings.collisionAvoidDst, boid.boidSettings.collisonMask))
                 {
                     return dir;
                 }
@@ -251,5 +283,16 @@ namespace Boids
             }
         }
 
+    }
+
+    public struct BoidCollisionData
+    {
+        public uint headingForCollision;
+        public Vector3 collisionAvoidDir;
+
+        public static int GetSize()
+        {
+            return sizeof(float) * 3 + sizeof(uint);
+        }
     }
 }
