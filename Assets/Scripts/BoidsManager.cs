@@ -26,12 +26,28 @@ namespace Boids
         [SerializeField]
         private Material boidMaterial;
 
+        [SerializeField]
+        private Mesh boidMesh;
+
         private Material boidInstancedMaterial;
+
+        uint[] args;
+
+        GraphicsBuffer argsBuffer;
 
         private void Awake()
         {
             instance = this;
             boidInstancedMaterial = new Material(boidMaterial);
+
+            args = new uint[5] { 0, 0, 0, 0, 0 };
+            args[0] = (uint)boidMesh.GetIndexCount(0);
+            args[1] = (uint)0;
+            args[2] = (uint)boidMesh.GetIndexStart(0);
+            args[3] = (uint)boidMesh.GetBaseVertex(0);
+
+            argsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.IndirectArguments,1, 5 * sizeof(uint));
+            argsBuffer.SetData(args);
         }
 
         private void OnEnable()
@@ -155,6 +171,7 @@ namespace Boids
         private void Update()
         {
             DoSimulation();
+            DoRender();
         }
 
         private void DoSimulation()
@@ -176,7 +193,7 @@ namespace Boids
                 {
                     var outBoid = boidsData[i];
                     var boid = boids[(int)outBoid.listIndex];
-                    boid.FromBoidData(outBoid);
+                    //boid.FromBoidData(outBoid);
                     var headingForCollision = IsHeadingForCollision(boid);
                     var collisionData = boidCollisionDatas[(int)outBoid.listIndex];
                     collisionData.headingForCollision = (uint)(headingForCollision ? 1 : 0);
@@ -196,6 +213,15 @@ namespace Boids
 
                 boidInstancedMaterial.SetBuffer("boids", boidsBuffer);
             }
+        }
+
+        private void DoRender()
+        {
+            RenderParams renderParams = new RenderParams(boidInstancedMaterial);
+            renderParams.material = boidInstancedMaterial;
+            renderParams.matProps = new MaterialPropertyBlock();
+            renderParams.worldBounds = new Bounds(Vector3.zero, Vector3.one * 1000);
+            Graphics.RenderMeshIndirect(renderParams, boidMesh, argsBuffer);
         }
 
         private bool IsHeadingForCollision(BoidBody boid)

@@ -26,6 +26,8 @@ Shader "Unlit/BoidShader"
             #pragma multi_compile_fog
             #pragma multi_compile_instancing
 
+            #define UNITY_INDIRECT_DRAW_ARGS IndirectDrawIndexedArgs
+            #include "UnityIndirect.cginc"
             #include "UnityCG.cginc"
 
             struct appdata
@@ -37,6 +39,7 @@ Shader "Unlit/BoidShader"
             {
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
+                float4 worldPos : TEXCOORD1;
             };
 
             struct Boid
@@ -61,18 +64,25 @@ Shader "Unlit/BoidShader"
                 float avoidCollisionWeight;
             };
 
-            RWStructuredBuffer<Boid> boids;
+            StructuredBuffer<Boid> boids;
             uint numBoids;
 
             StructuredBuffer<BoidSettings> boidSettings;
 
             float4 _Albedo1;
 
-            v2f vert (appdata v, uint instanceID : SV_INSTANCEID)
+            v2f vert (appdata v, uint instanceID : SV_InstanceID)
             {
+                InitIndirectDrawArgs(0);
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+
+                float3 boidPosition = boids[instanceID].position;
+
+                float4 worldPos = float4(boidPosition, 1);
+
+                o.vertex = UnityObjectToClipPos(worldPos);
                 UNITY_TRANSFER_FOG(o,o.vertex);
+                o.worldPos = worldPos;
                 return o;
             }
 
