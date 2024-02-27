@@ -12124,6 +12124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boidComputeShader: {fileID: 7200000, guid: 9ee77fa350a5c7c458b63235edc5d23b, type: 3}
+  boidMaterial: {fileID: 2100000, guid: dbd2b65d58d792648974ae850e87d53e, type: 2}
 --- !u!4 &1955001080
 Transform:
   m_ObjectHideFlags: 0

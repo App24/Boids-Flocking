@@ -23,9 +23,15 @@ namespace Boids
 
         List<BoidCollisionData> boidCollisionDatas = new List<BoidCollisionData>();
 
+        [SerializeField]
+        private Material boidMaterial;
+
+        private Material boidInstancedMaterial;
+
         private void Awake()
         {
             instance = this;
+            boidInstancedMaterial = new Material(boidMaterial);
         }
 
         private void OnEnable()
@@ -96,6 +102,7 @@ namespace Boids
                 boidComputeShader.SetBuffer(0, "boidCollisionData", boidCollisionBuffer);
             }
             boidComputeShader.SetInt("numBoids", boidDatas.Count);
+            boidInstancedMaterial.SetInt("numBoids", boidDatas.Count);
         }
 
         private void RecreateBoidSettingsBuffer(List<BoidData> boidDatas)
@@ -129,6 +136,7 @@ namespace Boids
                 boidSettingsBufffer = new ComputeBuffer(boidSettingsData.Count, BoidSettingsData.GetSize());
                 boidSettingsBufffer.SetData(boidSettingsData);
                 boidComputeShader.SetBuffer(0, "boidSettings", boidSettingsBufffer);
+                boidInstancedMaterial.SetBuffer("boidSettings", boidSettingsBufffer);
             }
         }
 
@@ -185,6 +193,8 @@ namespace Boids
 
                 boidCollisionBuffer.SetData(boidCollisionDatas);
                 boidComputeShader.SetBuffer(0, "boidCollisionData", boidCollisionBuffer);
+
+                boidInstancedMaterial.SetBuffer("boids", boidsBuffer);
             }
         }
 
