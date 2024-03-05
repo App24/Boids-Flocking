@@ -18,6 +18,9 @@ namespace Boids
         [SerializeField]
         private int maxAmount;
 
+        [SerializeField]
+        private BoidSettings boidSettings;
+
         private void Start()
         {
             var amount = Random.Range(minAmount, maxAmount);
@@ -25,10 +28,12 @@ namespace Boids
             for (int i = 0; i < amount; i++)
             {
                 var position = new Vector3(Random.Range(-halfSize.x, halfSize.x), Random.Range(-halfSize.y, halfSize.y), Random.Range(-halfSize.z, halfSize.z));
+
                 GameObject gameObject = Instantiate(prefab);
                 gameObject.transform.SetParent(transform, false);
                 gameObject.transform.position = transform.position + position;
                 gameObject.transform.rotation = Random.rotation;
+                gameObject.GetComponent<MeshRenderer>().enabled = false;
             }
         }
 

@@ -45,9 +45,6 @@ namespace Boids
             args[1] = (uint)0;
             args[2] = (uint)boidMesh.GetIndexStart(0);
             args[3] = (uint)boidMesh.GetBaseVertex(0);
-
-            argsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.IndirectArguments,1, 5 * sizeof(uint));
-            argsBuffer.SetData(args);
         }
 
         private void OnEnable()
@@ -65,6 +62,9 @@ namespace Boids
 
             boidCollisionBuffer.Release();
             boidCollisionBuffer = null;
+
+            argsBuffer.Release();
+            argsBuffer = null;
         }
 
         public void RecreateBoidsBuffer()
@@ -78,6 +78,9 @@ namespace Boids
             {
                 boidCollisionBuffer.Release();
             }
+
+            if (argsBuffer != null)
+                argsBuffer.Release();
 
             var boidDatas = new List<BoidData>();
             boidCollisionDatas.Clear();
@@ -112,6 +115,7 @@ namespace Boids
                 boidsBuffer = new ComputeBuffer(boidDatas.Count, BoidData.GetSize());
                 boidsBuffer.SetData(boidDatas);
                 boidComputeShader.SetBuffer(0, "boids", boidsBuffer);
+                boidInstancedMaterial.SetBuffer("boids", boidsBuffer);
 
                 boidCollisionBuffer = new ComputeBuffer(boidCollisionDatas.Count, BoidCollisionData.GetSize());
                 boidCollisionBuffer.SetData(boidCollisionDatas);
@@ -119,6 +123,10 @@ namespace Boids
             }
             boidComputeShader.SetInt("numBoids", boidDatas.Count);
             boidInstancedMaterial.SetInt("numBoids", boidDatas.Count);
+
+            argsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.IndirectArguments, 1, 5 * sizeof(uint));
+            args[1] = (uint)boidDatas.Count;
+            argsBuffer.SetData(args);
         }
 
         private void RecreateBoidSettingsBuffer(List<BoidData> boidDatas)
@@ -193,7 +201,7 @@ namespace Boids
                 {
                     var outBoid = boidsData[i];
                     var boid = boids[(int)outBoid.listIndex];
-                    //boid.FromBoidData(outBoid);
+                    boid.FromBoidData(outBoid);
                     var headingForCollision = IsHeadingForCollision(boid);
                     var collisionData = boidCollisionDatas[(int)outBoid.listIndex];
                     collisionData.headingForCollision = (uint)(headingForCollision ? 1 : 0);
@@ -209,19 +217,20 @@ namespace Boids
                 }
 
                 boidCollisionBuffer.SetData(boidCollisionDatas);
-                boidComputeShader.SetBuffer(0, "boidCollisionData", boidCollisionBuffer);
+                //boidComputeShader.SetBuffer(0, "boidCollisionData", boidCollisionBuffer);
 
-                boidInstancedMaterial.SetBuffer("boids", boidsBuffer);
+                //boidInstancedMaterial.SetBuffer("boids", boidsBuffer);
             }
         }
 
         private void DoRender()
         {
-            RenderParams renderParams = new RenderParams(boidInstancedMaterial);
+            Graphics.DrawMeshInstancedIndirect(boidMesh, 0, boidInstancedMaterial, new Bounds(Vector3.zero, Vector3.one * 1000), argsBuffer);
+            /*RenderParams renderParams = new RenderParams(boidInstancedMaterial);
             renderParams.material = boidInstancedMaterial;
             renderParams.matProps = new MaterialPropertyBlock();
             renderParams.worldBounds = new Bounds(Vector3.zero, Vector3.one * 1000);
-            Graphics.RenderMeshIndirect(renderParams, boidMesh, argsBuffer);
+            Graphics.RenderMeshIndirect(renderParams, boidMesh, argsBuffer);*/
         }
 
         private bool IsHeadingForCollision(BoidBody boid)

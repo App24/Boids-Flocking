@@ -115,6 +115,7 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - numBoids: 0
     m_Colors:
     - _AOColor: {r: 1, g: 1, b: 1, a: 1}
     - _Albedo1: {r: 1, g: 1, b: 1, a: 1}
