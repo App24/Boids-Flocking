@@ -5513,8 +5513,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boundsBox: {x: 30, y: 30, z: 30}
   prefab: {fileID: 3784492434218528900, guid: df8a8663d34bd7d4d9163147d86ee95e, type: 3}
-  minAmount: 1
-  maxAmount: 5
+  minAmount: 10
+  maxAmount: 20
+  boidSettings: {fileID: 0}
 --- !u!1 &782693702
 GameObject:
   m_ObjectHideFlags: 0

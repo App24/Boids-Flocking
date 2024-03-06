@@ -71,7 +71,7 @@ Shader "Unlit/BoidShader"
             float4 _Albedo1, _Albedo2;
 
             float4 RotateAroundYInDegrees (float4 vertex, float degrees) {
-                float alpha = degrees;
+                float alpha = degrees * UNITY_PI / 180.0;
                 float sina, cosa;
                 sincos(alpha, sina, cosa);
                 float2x2 m = float2x2(cosa, -sina, sina, cosa);
@@ -79,7 +79,7 @@ Shader "Unlit/BoidShader"
             }
             
             float4 RotateAroundXInDegrees (float4 vertex, float degrees) {
-                float alpha = degrees;
+                float alpha = degrees * UNITY_PI / 180.0;
                 float sina, cosa;
                 sincos(alpha, sina, cosa);
                 float2x2 m = float2x2(cosa, -sina, sina, cosa);
@@ -87,45 +87,33 @@ Shader "Unlit/BoidShader"
             }
             
             float4 RotateAroundZInDegrees (float4 vertex, float degrees) {
-                float alpha = degrees;
+                float alpha = degrees * UNITY_PI / 180.0;
                 float sina, cosa;
                 sincos(alpha, sina, cosa);
                 float2x2 m = float2x2(cosa, -sina, sina, cosa);
                 return float4(mul(m, vertex.xy), vertex.zw).yzxw;
             }
 
-            float Angle(float3 from, float3 to){
-                return acos(clamp(dot(normalize(from), normalize(to)), -1, 1)) * (UNITY_PI / 180.0);
-            }
-
-            float4 AngleAxis(float aAngle, float3 aAxis){
-                aAxis = normalize(aAxis);
-                float rad = aAngle * ((UNITY_PI * 2)/360.f) * 0.5f;
-                aAxis *= sin(rad);
-                return float4(aAxis, cos(rad));
-            }
-
             float4 FromLookRotation(float3 forward, float3 up){
                 forward = normalize(forward);
 
-                float3 vec = normalize(forward);
-                float3 vec2 = normalize(cross(up, vec));
-                float3 vec3 = cross(vec, vec2);
+                float3 right = normalize(cross(up, forward));
+                up = cross(forward, right);
 
-                float m00 = vec2.x;
-                float m01 = vec2.y;
-                float m02 = vec2.z;
-                float m10 = vec3.x;
-                float m11 = vec3.y;
-                float m12 = vec3.z;
-                float m20 = vec.x;
-                float m21 = vec.y;
-                float m22 = vec.z;
+                float m00 = right.x;
+                float m01 = right.y;
+                float m02 = right.z;
+                float m10 = up.x;
+                float m11 = up.y;
+                float m12 = up.z;
+                float m20 = forward.x;
+                float m21 = forward.y;
+                float m22 = forward.z;
 
                 float num8 = (m00 + m11) + m22;
                 float4 q;
                 if(num8 > 0){
-                    float num = sqrt(num8+1);
+                    float num = sqrt(num8 + 1.f);
                     q.w = num * 0.5f;
                     num = 0.5f/ num;
                     q.x = (m12 - m21) * num;
@@ -164,25 +152,52 @@ Shader "Unlit/BoidShader"
                 return q;
             }
 
+            float NormalizeAngle(float angle){
+                float modAngle = angle % 360.f;
+
+                if(modAngle < 0.f)
+                    return modAngle + 360.f;
+                return modAngle;
+            }
+
+            float3 NormalizeAngles(float3 angles){
+                angles.x = NormalizeAngle(angles.x);
+                angles.y = NormalizeAngle(angles.y);
+                angles.z = NormalizeAngle(angles.z);
+                return angles;
+            }
+
             float3 ToEuler(float4 q){
-                double3 res;
+                float sqw = q.w * q.w;
+                float sqx = q.x * q.x;
+                float sqy = q.y * q.y;
+                float sqz = q.z * q.z;
 
-                double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
-                double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-                res.x = atan2(sinr_cosp, cosr_cosp);
+                float unit = sqx + sqy + sqz + sqw;
 
-                double sinp = 2 * (q.w * q.y - q.z * q.x);
-                if(abs(sinp) >= 1){
-                    res.y = UNITY_PI / 2.0 * sign(sinp);
-                }else{
-                    res.y = asin(sinp);
+                float test = q.x * q.w - q.y * q.z;
+                float3 v;
+
+                if(test > 0.4995f * unit){
+                    v.y = 2.f * atan2(q.y, q.x);
+                    v.x = UNITY_PI / 2.f;
+                    v.z = 0;
+                    return NormalizeAngles(v * (360 / (UNITY_PI * 2)));
                 }
 
-                double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-                double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-                res.z = atan2(siny_cosp, cosy_cosp);
+                if(test < -0.4995f * unit){
+                    v.y = -2.f * atan2(q.y, q.x);
+                    v.x = -UNITY_PI / 2.f;
+                    v.z = 0;
+                    return NormalizeAngles(v * (360 / (UNITY_PI * 2)));
+                }
 
-                return (float3) res;
+                float4 rot = float4(q.w, q.z, q.x, q.y);
+                v.y = atan2(2.f * rot.x * rot.w + 2.f * rot.y * rot.z, 1 - 2.f * (rot.z * rot.z + rot.w * rot.w));
+                v.x = asin(2.f * (rot.x * rot.z - rot.w * rot.y));
+                v.z = atan2(2.f * rot.x * rot.y + 2.f * rot.z * rot.w, 1 - 2.f * (rot.y * rot.y + rot.z * rot.z));
+
+                    return NormalizeAngles(v * (360 / (UNITY_PI * 2)));
             }
 
             v2f vert (appdata v, uint instanceID : SV_InstanceID)
@@ -198,9 +213,9 @@ Shader "Unlit/BoidShader"
 
                 //float4 localPosition = float4(mul(float4x4(rotation.x, -rotation.y, -rotation.z, -rotation.w, rotation.y, rotation.x, -rotation.w, rotation.z, rotation.z, rotation.w, rotation.x, -rotation.y, rotation.w, -rotation.z, rotation.y, rotation.x), v.vertex));
 
-                float4 localPosition = RotateAroundXInDegrees(v.vertex, -rotation.x);
-                localPosition = RotateAroundYInDegrees(localPosition, rotation.y);
-                localPosition = RotateAroundZInDegrees(localPosition, rotation.z);
+                float4 localPosition = RotateAroundYInDegrees(v.vertex, 360.f - rotation.y);
+                localPosition = RotateAroundXInDegrees(localPosition, 360.f - rotation.x);
+                localPosition = RotateAroundZInDegrees(localPosition, 360.f - rotation.z);
                 //localPosition = RotateAroundYInDegrees(localPosition, ((-boid.dir.y + 1)/2.f) * 360.f);
                 //localPosition = RotateAroundZInDegrees(localPosition, ((-boid.dir.z + 1)/2.f) * 360.f);
 
