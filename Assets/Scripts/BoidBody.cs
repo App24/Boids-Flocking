@@ -4,56 +4,45 @@ using UnityEngine;
 
 namespace Boids
 {
-    public class BoidBody : MonoBehaviour
+    public class BoidBody
     {
         public BoidSettings boidSettings;
 
         private Vector3 velocity;
         private Vector3 acceleration;
+        public Vector3 position;
+        public Vector3 forward;
+        public Quaternion rotation;
+        public Color color;
 
-        private void Start()
+        public BoidBody(Vector3 position, Vector3 forward, BoidSettings boidSettings)
         {
-            velocity = transform.forward * ((boidSettings.maxSpeed + boidSettings.minSpeed) / 2f);
-        }
-
-        private void OnEnable()
-        {
-            BoidsManager.Instance.AddBoid(this);
-        }
-
-        private void OnDisable()
-        {
-            BoidsManager.Instance.RemoveBoid(this);
+            this.position = position;
+            this.forward = forward;
+            this.boidSettings = boidSettings;
+            velocity = forward * ((boidSettings.maxSpeed + boidSettings.minSpeed) / 2f);
+            rotation = Quaternion.LookRotation(forward);
         }
 
         public BoidData ToBoidData()
         {
             return new BoidData()
             {
-                position = transform.position,
+                position = position,
                 velocity = velocity,
                 acceleration = acceleration,
-                dir = transform.forward
+                dir = forward,
+                color = new Vector3(color.r, color.g, color.b)
             };
         }
 
         public void FromBoidData(BoidData boidData)
         {
-            transform.position = boidData.position;
+            position = boidData.position;
             velocity = boidData.velocity;
             acceleration = boidData.acceleration;
-            transform.forward = boidData.dir;
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            if (!boidSettings) return;
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, boidSettings.boundsRadius);
-
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, boidSettings.collisionAvoidDst);
+            forward = boidData.dir;
+            rotation = Quaternion.LookRotation(forward);
         }
     }
 
@@ -63,6 +52,7 @@ namespace Boids
         public Vector3 velocity;
         public Vector3 acceleration;
         public Vector3 dir;
+        public Vector3 color;
         public uint listIndex;
         public uint boidSettingIndex;
         /*public uint headingForCollision;
@@ -70,7 +60,7 @@ namespace Boids
 
         public static int GetSize()
         {
-            return sizeof(float) * 12 + sizeof(uint) * 2;
+            return sizeof(float) * 15 + sizeof(uint) * 2;
         }
     }
 }

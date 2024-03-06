@@ -122,7 +122,6 @@ namespace Boids
                 boidComputeShader.SetBuffer(0, "boidCollisionData", boidCollisionBuffer);
             }
             boidComputeShader.SetInt("numBoids", boidDatas.Count);
-            boidInstancedMaterial.SetInt("numBoids", boidDatas.Count);
 
             argsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.IndirectArguments, 1, 5 * sizeof(uint));
             args[1] = (uint)boidDatas.Count;
@@ -236,7 +235,7 @@ namespace Boids
         private bool IsHeadingForCollision(BoidBody boid)
         {
             RaycastHit hit;
-            if (Physics.SphereCast(boid.transform.position, boid.boidSettings.boundsRadius, boid.transform.forward, out hit, boid.boidSettings.collisionAvoidDst, boid.boidSettings.collisonMask))
+            if (Physics.SphereCast(boid.position, boid.boidSettings.boundsRadius, boid.forward, out hit, boid.boidSettings.collisionAvoidDst, boid.boidSettings.collisonMask))
                 return true;
             return false;
         }
@@ -247,15 +246,15 @@ namespace Boids
 
             for (int i = 0; i < rayDirections.Length; i++)
             {
-                Vector3 dir = boid.transform.TransformDirection(rayDirections[i]);
-                Ray ray = new Ray(boid.transform.position, dir);
+                Vector3 dir = boid.rotation * rayDirections[i];
+                Ray ray = new Ray(boid.position, dir);
                 if (!Physics.SphereCast(ray, boid.boidSettings.boundsRadius, boid.boidSettings.collisionAvoidDst, boid.boidSettings.collisonMask))
                 {
                     return dir;
                 }
             }
 
-            return boid.transform.forward;
+            return boid.forward;
         }
 
         /*private ComputeBuffer SetUpBoidsData(out int boidsCount)
