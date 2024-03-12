@@ -22,7 +22,12 @@ namespace Boids
         [ColorUsage(false, false)]
         private Color boidColor;
 
+        [SerializeField]
+        private bool ignoreOtherBoids = true;
+
         private List<BoidBody> boids = new List<BoidBody>();
+
+        private static uint boidGroup;
 
         private void Start()
         {
@@ -39,27 +44,24 @@ namespace Boids
                 gameObject.GetComponent<MeshRenderer>().enabled = false;*/
                 var boid = new BoidBody(transform.position + position, Random.rotation * Vector3.forward, boidSettings);
                 boid.color = boidColor;
+                boid.boidGroup = boidGroup;
+                boid.ignoreOtherBoids = ignoreOtherBoids;
                 boids.Add(boid);
-                BoidsManager.Instance.AddBoid(boid);
             }
+            BoidsManager.Instance.AddBoids(boids);
+            boidGroup++;
         }
 
         private void OnDisable()
         {
-            foreach (var boid in boids)
-            {
-                BoidsManager.Instance.RemoveBoid(boid);
-            }
+            BoidsManager.Instance.RemoveBoids(boids);
         }
 
         private void OnEnable()
         {
             if (boids.Count == 0) return;
 
-            foreach(var boid in boids)
-            {
-                BoidsManager.Instance.AddBoid(boid);
-            }
+            BoidsManager.Instance.AddBoids(boids);
         }
 
         private void OnDrawGizmosSelected()
@@ -73,8 +75,10 @@ namespace Boids
             foreach (var boid in boids)
             {
                 boid.color = boidColor;
+                boid.ignoreOtherBoids = ignoreOtherBoids;
             }
-            BoidsManager.Instance.RecreateBoidsBuffer();
+            if(BoidsManager.Instance)
+            BoidsManager.Instance.SetBoidsBufferToRecreate();
         }
     }
 }

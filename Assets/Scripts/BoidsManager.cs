@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEditor.Build.Content;
 using UnityEngine;
@@ -35,6 +36,8 @@ namespace Boids
 
         GraphicsBuffer argsBuffer;
 
+        private bool recreateBoidBuffer;
+
         private void Awake()
         {
             instance = this;
@@ -67,9 +70,14 @@ namespace Boids
             argsBuffer = null;
         }
 
-        public void RecreateBoidsBuffer()
+        public void SetBoidsBufferToRecreate()
         {
-            if(boidsBuffer != null)
+            recreateBoidBuffer = true;
+        }
+
+        private void RecreateBoidsBuffer()
+        {
+            if (boidsBuffer != null)
             {
                 boidsBuffer.Release();
             }
@@ -126,6 +134,7 @@ namespace Boids
             argsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.IndirectArguments, 1, 5 * sizeof(uint));
             args[1] = (uint)boidDatas.Count;
             argsBuffer.SetData(args);
+            recreateBoidBuffer = false;
         }
 
         private void RecreateBoidSettingsBuffer(List<BoidData> boidDatas)
@@ -166,17 +175,34 @@ namespace Boids
         public void AddBoid(BoidBody boid)
         {
             boids.Add(boid);
-            RecreateBoidsBuffer();
+            SetBoidsBufferToRecreate();
         }
 
         public void RemoveBoid(BoidBody boid)
         {
             boids.Remove(boid);
-            RecreateBoidsBuffer();
+            SetBoidsBufferToRecreate();
+        }
+
+        public void AddBoids(IEnumerable<BoidBody> boids)
+        {
+            this.boids.AddRange(boids);
+            SetBoidsBufferToRecreate();
+        }
+
+        public void RemoveBoids(IEnumerable<BoidBody> boids)
+        {
+            for(int i = boids.Count() - 1; i >= 0; i--)
+            {
+                this.boids.Remove(boids.ElementAt(i));
+            }
+            SetBoidsBufferToRecreate();
         }
 
         private void Update()
         {
+            if (recreateBoidBuffer)
+                RecreateBoidsBuffer();
             DoSimulation();
             DoRender();
         }

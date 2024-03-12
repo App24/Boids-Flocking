@@ -45,6 +45,8 @@ Shader "Unlit/BoidShader"
                 float3 color;
                 uint listIndex;
                 uint boidSettingIndex;
+                uint boidGroup;
+                uint ignoreOtherBoids;
             };
 
             struct BoidSettings {

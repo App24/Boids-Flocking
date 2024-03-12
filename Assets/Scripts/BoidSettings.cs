@@ -44,7 +44,7 @@ namespace Boids
         private void OnValidate()
         {
             if (!Application.isPlaying) return;
-            BoidsManager.Instance.RecreateBoidsBuffer();
+            BoidsManager.Instance.SetBoidsBufferToRecreate();
         }
     }
 

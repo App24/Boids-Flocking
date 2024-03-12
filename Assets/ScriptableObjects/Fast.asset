@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ae30f35da884aa4ab20f3a6df72f212, type: 3}
-  m_Name: Simple
+  m_Name: Fast
   m_EditorClassIdentifier: 
   minSpeed: 9
-  maxSpeed: 17
-  maxSteerForce: 6
+  maxSpeed: 34
+  maxSteerForce: 10
   viewRadius: 15
   avoidanceRadius: 8
-  alignWeight: 0.6
-  cohesionWeight: 0.7
+  alignWeight: 1
+  cohesionWeight: 0.9
   seperateWeight: 2
-  avoidCollisionWeight: 7
-  boundsRadius: 1
-  collisionAvoidDst: 30
+  avoidCollisionWeight: 20
+  boundsRadius: 3
+  collisionAvoidDst: 40
   collisonMask:
     serializedVersion: 2
     m_Bits: 55

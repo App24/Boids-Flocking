@@ -14,6 +14,8 @@ namespace Boids
         public Vector3 forward;
         public Quaternion rotation;
         public Color color;
+        public uint boidGroup;
+        public bool ignoreOtherBoids;
 
         public BoidBody(Vector3 position, Vector3 forward, BoidSettings boidSettings)
         {
@@ -32,7 +34,9 @@ namespace Boids
                 velocity = velocity,
                 acceleration = acceleration,
                 dir = forward,
-                color = new Vector3(color.r, color.g, color.b)
+                color = new Vector3(color.r, color.g, color.b),
+                boidGroup = boidGroup,
+                ignoreOtherBoids = (uint)(ignoreOtherBoids ? 1 : 0)
             };
         }
 
@@ -55,12 +59,14 @@ namespace Boids
         public Vector3 color;
         public uint listIndex;
         public uint boidSettingIndex;
+        public uint boidGroup;
+        public uint ignoreOtherBoids;
         /*public uint headingForCollision;
         public Vector3 collisionAvoidDir;*/
 
         public static int GetSize()
         {
-            return sizeof(float) * 15 + sizeof(uint) * 2;
+            return sizeof(float) * 15 + sizeof(uint) * 4;
         }
     }
 }

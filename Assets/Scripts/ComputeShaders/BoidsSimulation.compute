@@ -10,6 +10,8 @@ struct Boid
     float3 color;
     uint listIndex;
     uint boidSettingIndex;
+    uint boidGroup;
+    uint ignoreOtherBoids;
 };
 
 struct BoidCollisionData
@@ -97,18 +99,18 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     BoidSettings settings = boidSettings[boid.boidSettingIndex];
     for (uint i = 0; i < numBoids; i++)
     {
-        if (boids[id.x].listIndex != i)
+        Boid otherBoid = boids[i];
+        if (boid.listIndex != otherBoid.listIndex && (boid.ignoreOtherBoids && boid.boidGroup == otherBoid.boidGroup))
         {
-            Boid otherBoid = boids[i];
             float3 offset = otherBoid.position - boid.position;
             float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
-            
+
             if (sqrDst < settings.viewRadius * settings.viewRadius)
             {
                 numFlockmates += 1;
                 flockCentre += otherBoid.position;
                 avgFlockHeading += otherBoid.dir;
-                
+
                 if (sqrDst < settings.avoidanceRadius * settings.avoidanceRadius)
                 {
                     avgAvoidanceHeading -= offset / sqrDst;
