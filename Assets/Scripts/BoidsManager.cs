@@ -38,6 +38,8 @@ namespace Boids
 
         private bool recreateBoidBuffer;
 
+        private BoidData[] boidsData;
+
         private void Awake()
         {
             instance = this;
@@ -57,17 +59,29 @@ namespace Boids
 
         private void OnDisable()
         {
-            boidsBuffer.Release();
-            boidsBuffer = null;
+            if (boidsBuffer != null)
+            {
+                boidsBuffer.Release();
+                boidsBuffer = null;
+            }
 
-            boidSettingsBufffer.Release();
-            boidSettingsBufffer = null;
+            if (boidSettingsBufffer != null)
+            {
+                boidSettingsBufffer.Release();
+                boidSettingsBufffer = null;
+            }
 
-            boidCollisionBuffer.Release();
-            boidCollisionBuffer = null;
+            if (boidCollisionBuffer != null)
+            {
+                boidCollisionBuffer.Release();
+                boidCollisionBuffer = null;
+            }
 
-            argsBuffer.Release();
-            argsBuffer = null;
+            if (argsBuffer != null)
+            {
+                argsBuffer.Release();
+                argsBuffer = null;
+            }
         }
 
         public void SetBoidsBufferToRecreate()
@@ -135,6 +149,7 @@ namespace Boids
             args[1] = (uint)boidDatas.Count;
             argsBuffer.SetData(args);
             recreateBoidBuffer = false;
+            this.boidsData = new BoidData[boidDatas.Count];
         }
 
         private void RecreateBoidSettingsBuffer(List<BoidData> boidDatas)
@@ -219,7 +234,6 @@ namespace Boids
             {
                 boidComputeShader.Dispatch(0, numThreadsX, 1, 1);
 
-                var boidsData = new BoidData[boidsCount];
                 boidsBuffer.GetData(boidsData);
 
                 for (int i = 0; i < boidsCount; i++)
