@@ -77,8 +77,8 @@ namespace Boids
                 boid.color = boidColor;
                 boid.ignoreOtherBoids = ignoreOtherBoids;
             }
-            if(BoidsManager.Instance)
-            BoidsManager.Instance.SetBoidsBufferToRecreate();
+            if (BoidsManager.Instance)
+                BoidsManager.Instance.SetBoidsBufferToRecreate();
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Boids
         private void OnFire(InputValue inputValue)
         {
             var value = inputValue.Get<float>();
-            if(value > 0 && hookController.CanExtendHook)
+            if (value > 0 && hookController.CanExtendHook)
             {
                 hookController.ExtendHook();
             }

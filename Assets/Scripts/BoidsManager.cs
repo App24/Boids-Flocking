@@ -13,7 +13,7 @@ namespace Boids
         private static BoidsManager instance;
         public static BoidsManager Instance => instance;
 
-        List<BoidBody> boids = new List<BoidBody>();
+        private List<BoidBody> boids = new List<BoidBody>();
 
         [SerializeField]
         private ComputeShader boidComputeShader;
@@ -21,8 +21,7 @@ namespace Boids
         private ComputeBuffer boidsBuffer;
         private ComputeBuffer boidSettingsBufffer;
         private ComputeBuffer boidCollisionBuffer;
-
-        List<BoidCollisionData> boidCollisionDatas = new List<BoidCollisionData>();
+        private List<BoidCollisionData> boidCollisionDatas = new List<BoidCollisionData>();
 
         [SerializeField]
         private Material boidMaterial;
@@ -31,13 +30,12 @@ namespace Boids
         private Mesh boidMesh;
 
         private Material boidInstancedMaterial;
-
-        uint[] args;
-
-        GraphicsBuffer argsBuffer;
+        private uint[] args;
+        private GraphicsBuffer argsBuffer;
 
         private bool recreateBoidBuffer;
 
+        // prevent garbage collection
         private BoidData[] boidsData;
 
         private int boidsCount;
@@ -98,7 +96,7 @@ namespace Boids
                 boidsBuffer.Release();
             }
 
-            if(boidCollisionBuffer != null)
+            if (boidCollisionBuffer != null)
             {
                 boidCollisionBuffer.Release();
             }
@@ -212,7 +210,7 @@ namespace Boids
 
         public void RemoveBoids(IEnumerable<BoidBody> boids)
         {
-            for(int i = boids.Count() - 1; i >= 0; i--)
+            for (int i = boids.Count() - 1; i >= 0; i--)
             {
                 this.boids.Remove(boids.ElementAt(i));
             }
@@ -286,7 +284,7 @@ namespace Boids
             return false;
         }
 
-        Vector3 ObstacleRays(BoidBody boid)
+        private Vector3 ObstacleRays(BoidBody boid)
         {
             Vector3[] rayDirections = BoidHelper.directions;
 
@@ -349,8 +347,7 @@ namespace Boids
 
     public static class BoidHelper
     {
-
-        const int numViewDirections = 300;
+        private const int numViewDirections = 300;
         public static readonly Vector3[] directions;
 
         static BoidHelper()

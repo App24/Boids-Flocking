@@ -14,7 +14,7 @@ namespace Boids
 
         private float ropeExtension;
 
-        enum RopeExtensionType
+        private enum RopeExtensionType
         {
             Still,
             Extending,
@@ -47,20 +47,20 @@ namespace Boids
 
         private void Update()
         {
-            if(ropeExtensionType == RopeExtensionType.Extending)
+            if (ropeExtensionType == RopeExtensionType.Extending)
             {
                 ropeExtension += Time.deltaTime * extensionSpeed;
-                if(ropeExtension >= maxExtensionLength)
+                if (ropeExtension >= maxExtensionLength)
                 {
                     ropeExtension = maxExtensionLength;
                     ropeExtensionType = RopeExtensionType.Retreating;
                 }
                 SetRopeExtensionVisual();
             }
-            else if(ropeExtensionType == RopeExtensionType.Retreating)
+            else if (ropeExtensionType == RopeExtensionType.Retreating)
             {
                 ropeExtension -= Time.deltaTime * extensionSpeed;
-                if(ropeExtension < 0)
+                if (ropeExtension < 0)
                 {
                     ropeExtension = 0;
                     ropeExtensionType = RopeExtensionType.Still;
