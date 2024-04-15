@@ -30,6 +30,9 @@ namespace Boids
         [SerializeField]
         private ParticleSystem rotorParticleSystem;
 
+        [SerializeField]
+        private HookController hookController;
+
         private bool particlePlaying;
 
         private void Awake()
@@ -37,16 +40,25 @@ namespace Boids
             rb = GetComponent<Rigidbody>();
         }
 
-        private void OnMove(InputValue value)
+        private void OnMove(InputValue inputValue)
         {
-            var vector = value.Get<Vector2>();
+            var vector = inputValue.Get<Vector2>();
             moveVector.x = vector.x;
             moveVector.y = vector.y;
         }
 
-        private void OnAscend(InputValue value)
+        private void OnAscend(InputValue inputValue)
         {
-            moveVector.z = value.Get<float>();
+            moveVector.z = inputValue.Get<float>();
+        }
+
+        private void OnFire(InputValue inputValue)
+        {
+            var value = inputValue.Get<float>();
+            if(value > 0 && hookController.CanExtendHook)
+            {
+                hookController.ExtendHook();
+            }
         }
 
         private void FixedUpdate()
