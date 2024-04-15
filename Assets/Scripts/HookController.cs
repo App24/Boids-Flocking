@@ -18,24 +18,38 @@ namespace Boids
         {
             Still,
             Extending,
-            Retreating
+            Retreating,
+            Grab
         }
 
         private RopeExtensionType ropeExtensionType;
 
-        [SerializeField]
-        private float maxExtensionLength;
+        public float maxExtensionLength;
 
         [SerializeField]
         private float extensionSpeed;
 
         private float ropeRenderSize;
 
+        public ClawCollider clawCollider;
+
         public bool CanExtendHook => ropeExtensionType == RopeExtensionType.Still;
+
+        public bool IsHooked => ropeExtensionType == RopeExtensionType.Grab;
+
+        public bool IsRetracting => ropeExtensionType == RopeExtensionType.Retreating;
+
+        public bool IsExtending => ropeExtensionType == RopeExtensionType.Extending;
 
         private void Awake()
         {
             ropeRenderSize = ropeTransform.GetChild(0).localScale.y * 2f;
+        }
+
+        public void SetRopeExtension(float value)
+        {
+            ropeExtension = value;
+            SetRopeExtensionVisual();
         }
 
         private void SetRopeExtensionVisual()
@@ -77,6 +91,16 @@ namespace Boids
         public void RetractHook()
         {
             ropeExtensionType = RopeExtensionType.Retreating;
+        }
+
+        public void StopHook()
+        {
+            ropeExtensionType = RopeExtensionType.Still;
+        }
+
+        public void GrabHook()
+        {
+            ropeExtensionType = RopeExtensionType.Grab;
         }
     }
 }

@@ -35,6 +35,10 @@ namespace Boids
 
         private bool particlePlaying;
 
+        public bool canMoveHorizontal=true;
+        public bool canRotate =true;
+        public bool canMoveVertical = true;
+
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
@@ -55,17 +59,26 @@ namespace Boids
         private void OnFire(InputValue inputValue)
         {
             var value = inputValue.Get<float>();
-            if (value > 0 && hookController.CanExtendHook)
+            if (value > 0)
             {
-                hookController.ExtendHook();
+                if (hookController.CanExtendHook)
+                {
+                    hookController.ExtendHook();
+                }else if (hookController.IsHooked)
+                {
+                    hookController.clawCollider.ReleaseGrab();
+                }
             }
         }
 
         private void FixedUpdate()
         {
             //rb.MovePosition(moveVector * moveSpeed * Time.fixedDeltaTime);
+            if(canMoveHorizontal)
             rb.AddRelativeForce(new Vector3(0, 0, moveVector.y) * moveSpeed);
+            if(canMoveVertical)
             rb.AddRelativeForce(new Vector3(0, moveVector.z, 0) * ascendVelocity);
+            if(canRotate)
             rb.AddRelativeTorque(new Vector3(0, moveVector.x, 0) * turningSpeed);
 
             var motorSpeed = moveVector.magnitude;
