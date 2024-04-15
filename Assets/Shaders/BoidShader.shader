@@ -2,9 +2,21 @@ Shader "Unlit/BoidShader"
 {
     Properties
     {
+		_MainTex("Albedo (RGB)", 2D) = "white" {}
         _FogColor ("Fog Color", Color) = (1, 1, 1)
         _FogDensity ("Fog Density", Range(0.0, 1.0)) = 0.0
         _FogOffset ("Fog Offset", Range(0.0, 10.0)) = 0.0
+        _SpeedX("SpeedX", Range(0, 10)) = 1
+		_FrequencyX("FrequencyX", Range(0, 10)) = 1
+		_AmplitudeX("AmplitudeX", Range(0, 0.2)) = 1
+		_SpeedY("SpeedY", Range(0, 10)) = 1
+		_FrequencyY("FrequencyY", Range(0, 10)) = 1
+		_AmplitudeY("AmplitudeY", Range(0, 0.2)) = 1
+		_SpeedZ("SpeedZ", Range(0, 10)) = 1
+		_FrequencyZ("FrequencyZ", Range(0, 10)) = 1
+		_AmplitudeZ("AmplitudeZ", Range(0,  2)) = 1
+		_HeadLimit("HeadLimit", Range(-2,  2)) = 0.05
+        _TintMultiplier("Tint Multiplier", Range(0,1))=0.2
     }
     SubShader
     {
@@ -64,6 +76,33 @@ Shader "Unlit/BoidShader"
             StructuredBuffer<Boid> boids;
 
             StructuredBuffer<BoidSettings> boidSettings;
+
+            // X AXIS
+
+	        float _SpeedX;
+	        float _FrequencyX;
+	        float _AmplitudeX;
+	
+	        // Y AXIS
+
+	        float _SpeedY;
+	        float _FrequencyY;
+	        float _AmplitudeY;
+
+	        // Z AXIS
+	
+	        float _SpeedZ;
+	        float _FrequencyZ;
+	        float _AmplitudeZ;
+
+	        // Head Limit (Head wont shake so much)
+	
+	        float _HeadLimit;
+
+            sampler2D _MainTex;
+	float4 _MainTex_ST;
+
+    float _TintMultiplier;
 
             float4 RotateAroundYInDegrees (float4 vertex, float degrees) {
                 float alpha = degrees * UNITY_PI / 180.0;
@@ -208,6 +247,15 @@ Shader "Unlit/BoidShader"
 
                 //float4 localPosition = float4(mul(float4x4(rotation.x, -rotation.y, -rotation.z, -rotation.w, rotation.y, rotation.x, -rotation.w, rotation.z, rotation.z, rotation.w, rotation.x, -rotation.y, rotation.w, -rotation.z, rotation.y, rotation.x), v.vertex));
 
+                v.vertex.z += sin((v.vertex.z +instanceID + _Time.y * _SpeedX) * _FrequencyX) * _AmplitudeX;
+                v.vertex.y += sin((v.vertex.y +instanceID + _Time.y * _SpeedY) * _FrequencyY) * _AmplitudeY;
+
+                if(v.vertex.z > _HeadLimit){
+                    v.vertex.x += sin((0.05 +instanceID + _Time.y * _SpeedZ) * _FrequencyZ) * _AmplitudeZ * _HeadLimit;
+                }else{
+                    v.vertex.x += sin((v.vertex.x +instanceID + _Time.y * _SpeedZ) * _FrequencyZ) * _AmplitudeZ * v.vertex.z;
+                }
+
                 float4 localPosition = RotateAroundXInDegrees(v.vertex, rotation.x);
                 localPosition = RotateAroundYInDegrees(localPosition, 360.f - rotation.y);
                 //localPosition = RotateAroundZInDegrees(localPosition, 360.f - rotation.z);
@@ -229,10 +277,10 @@ Shader "Unlit/BoidShader"
                 float3 lightDir = _WorldSpaceLightPos0.xyz;
                 float ndotl = DotClamped(lightDir, normalize(float3(0, 1, 0)));
                 // sample the texture
-                fixed4 col = float4(i.color, 1);
+                fixed4 col = float4(i.color * _TintMultiplier.xxx, 1);
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                return tex2D(_MainTex, i.uv) + col;
             }
             ENDCG
         }

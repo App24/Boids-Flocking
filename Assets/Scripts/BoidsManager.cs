@@ -40,6 +40,8 @@ namespace Boids
 
         private BoidData[] boidsData;
 
+        private int boidsCount;
+
         private void Awake()
         {
             instance = this;
@@ -190,18 +192,21 @@ namespace Boids
         public void AddBoid(BoidBody boid)
         {
             boids.Add(boid);
+            boidsCount = this.boids.Count;
             SetBoidsBufferToRecreate();
         }
 
         public void RemoveBoid(BoidBody boid)
         {
             boids.Remove(boid);
+            boidsCount = this.boids.Count;
             SetBoidsBufferToRecreate();
         }
 
         public void AddBoids(IEnumerable<BoidBody> boids)
         {
             this.boids.AddRange(boids);
+            boidsCount = this.boids.Count;
             SetBoidsBufferToRecreate();
         }
 
@@ -211,6 +216,7 @@ namespace Boids
             {
                 this.boids.Remove(boids.ElementAt(i));
             }
+            boidsCount = this.boids.Count;
             SetBoidsBufferToRecreate();
         }
 

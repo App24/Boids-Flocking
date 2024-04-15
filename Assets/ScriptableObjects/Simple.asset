@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: Simple
   m_EditorClassIdentifier: 
   minSpeed: 10
-  maxSpeed: 12
-  maxSteerForce: 6
+  maxSpeed: 15
+  maxSteerForce: 10
   viewRadius: 15
-  avoidanceRadius: 5.76
-  alignWeight: 0.6
-  cohesionWeight: 0.7
+  avoidanceRadius: 5
+  alignWeight: 1
+  cohesionWeight: 0.9
   seperateWeight: 2
-  avoidCollisionWeight: 7
-  boundsRadius: 1
-  collisionAvoidDst: 30
+  avoidCollisionWeight: 20
+  boundsRadius: 3
+  collisionAvoidDst: 40
   collisonMask:
     serializedVersion: 2
     m_Bits: 55

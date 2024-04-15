@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6732765648633340221}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,8 +27,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3451060775699080285}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
@@ -114,9 +114,9 @@ Transform:
   m_GameObject: {fileID: 2409913034463301733}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.3420201, w: 0.9396927}
-  m_LocalPosition: {x: 0.051, y: -0.068, z: 0}
-  m_LocalScale: {x: 0.02, y: 0.15, z: 0.1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0.255, y: -0.34, z: 0}
+  m_LocalScale: {x: 0.099999994, y: 0.75, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6952971190373551995}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 40}
@@ -197,9 +197,9 @@ Transform:
   m_GameObject: {fileID: 4537397527182903846}
   serializedVersion: 2
   m_LocalRotation: {x: 0.9396927, y: -0.3420201, z: 0, w: 0}
-  m_LocalPosition: {x: 0.051, y: -0.178, z: 0}
-  m_LocalScale: {x: 0.02, y: 0.15, z: 0.1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0.255, y: -0.89, z: 0}
+  m_LocalScale: {x: 0.099999994, y: 0.75, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6952971190373551995}
   m_LocalEulerAnglesHint: {x: 180, y: 0, z: 40}
@@ -281,8 +281,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 1, z: 0.2}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 5, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8802008283457579013}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
@@ -345,6 +345,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6952971190373551995}
+  - component: {fileID: 6840072618656051400}
+  - component: {fileID: 3125890866505405542}
+  - component: {fileID: 5254461752123734074}
   m_Layer: 0
   m_Name: Claw
   m_TagString: Untagged
@@ -371,6 +374,67 @@ Transform:
   - {fileID: 187583219722554630}
   m_Father: {fileID: 5296862432927839808}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6840072618656051400
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5052211853032762724}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.4, z: 0.5}
+  m_Center: {x: 0, y: -0.6, z: 0}
+--- !u!114 &3125890866505405542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5052211853032762724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 023bc6641f22ba24c84e848a1b6fa33e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hookController: {fileID: 8552715306458693005}
+--- !u!54 &5254461752123734074
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5052211853032762724}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5291744856638103197
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,8 +722,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.4
-      minScalar: 0.3
+      scalar: 1.6
+      minScalar: 1.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1122,7 +1186,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.6
+      value: 3
       mode: 0
       spread: 0
       speed:
@@ -1241,7 +1305,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 40
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -5225,7 +5289,7 @@ Transform:
   m_GameObject: {fileID: 5630722182785412089}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.226, z: 0}
+  m_LocalPosition: {x: 0, y: -1.13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5247,8 +5311,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clawTransform: {fileID: 6952971190373551995}
   ropeTransform: {fileID: 5145025186015606801}
-  maxExtensionLength: 3
-  extensionSpeed: 5
+  maxExtensionLength: 10
+  extensionSpeed: 20
 --- !u!1 &6461927168677687361
 GameObject:
   m_ObjectHideFlags: 0
@@ -5276,8 +5340,8 @@ Transform:
   m_GameObject: {fileID: 6461927168677687361}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.15, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
+  m_LocalPosition: {x: 0, y: -0.75, z: 0}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5145025186015606801}
@@ -5360,8 +5424,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 1, z: 0.2}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 5, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8802008283457579013}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5440,7 +5504,7 @@ Transform:
   m_GameObject: {fileID: 6607544104649087691}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.15}
+  m_LocalPosition: {x: 0, y: 0, z: -5.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5509,8 +5573,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3668488425031618981}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
@@ -5591,9 +5655,9 @@ Transform:
   m_GameObject: {fileID: 7593030512449507810}
   serializedVersion: 2
   m_LocalRotation: {x: 0.9396927, y: 0.3420201, z: -0, w: 0}
-  m_LocalPosition: {x: -0.051, y: -0.17799996, z: 0}
-  m_LocalScale: {x: 0.02, y: 0.15, z: 0.1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.255, y: -0.89, z: 0}
+  m_LocalScale: {x: 0.099999994, y: 0.75, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6952971190373551995}
   m_LocalEulerAnglesHint: {x: 180, y: 0, z: -40}
@@ -5674,9 +5738,9 @@ Transform:
   m_GameObject: {fileID: 8819473902498456555}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.3420201, w: 0.9396927}
-  m_LocalPosition: {x: -0.051, y: -0.068, z: 0}
-  m_LocalScale: {x: 0.02, y: 0.15, z: 0.1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.255, y: -0.34, z: 0}
+  m_LocalScale: {x: 0.099999994, y: 0.75, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6952971190373551995}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -40}
@@ -5812,11 +5876,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1253ed1e5e89e7d4cb1b037fdec90726, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 35
-  ascendVelocity: 50
-  turningSpeed: 10
+  moveSpeed: 300
+  ascendVelocity: 200
+  turningSpeed: 200
   rotorTransform: {fileID: 8802008283457579013}
-  rotorRotationSpeed: 180
+  rotorRotationSpeed: 270
   rotorParticleSystem: {fileID: 2479262851343315019}
   hookController: {fileID: 8552715306458693005}
 --- !u!54 &8826886548744215091
@@ -5844,7 +5908,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!114 &3455890008793631480
 MonoBehaviour:
