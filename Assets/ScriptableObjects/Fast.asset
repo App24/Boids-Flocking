@@ -25,4 +25,4 @@ MonoBehaviour:
   collisionAvoidDst: 40
   collisonMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 4294967295
