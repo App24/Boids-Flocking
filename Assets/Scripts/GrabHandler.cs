@@ -9,17 +9,28 @@ namespace Boids
         [SerializeField]
         private Transform parentTransform;
 
+        [System.NonSerialized]
+        public bool hooked;
+
+        public System.Action onHooked;
+        public System.Action onRelease;
+
+        public SubmarineControl.MovementCapabilities disableMovement;
+
         public void GrabOntoHook(ClawCollider claw)
         {
-            var rotation = parentTransform.rotation;
-            parentTransform.transform.SetParent(claw.grabTransform, false);
-            parentTransform.transform.localPosition = -transform.localPosition;
-            parentTransform.transform.rotation = rotation;
+            parentTransform.transform.SetParent(claw.grabTransform, true);
+            SubmarineControl.Instance.movementCapabilities &= ~disableMovement;
+            hooked = true;
+            onHooked?.Invoke();
         }
 
         public void LetGo()
         {
             parentTransform.transform.SetParent(null, true);
+            SubmarineControl.Instance.movementCapabilities |= disableMovement;
+            hooked = false;
+            onRelease?.Invoke();
         }
     }
 }

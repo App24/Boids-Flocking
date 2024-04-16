@@ -8,6 +8,9 @@ namespace Boids
     [RequireComponent(typeof(Rigidbody))]
     public class SubmarineControl : MonoBehaviour
     {
+        private static SubmarineControl instance;
+        public static SubmarineControl Instance => instance;
+
         private Rigidbody rb;
 
         private Vector3 moveVector;
@@ -30,17 +33,16 @@ namespace Boids
         [SerializeField]
         private ParticleSystem rotorParticleSystem;
 
-        [SerializeField]
-        private HookController hookController;
+        public HookController hookController;
 
         private bool particlePlaying;
 
-        public bool canMoveHorizontal=true;
-        public bool canRotate =true;
-        public bool canMoveVertical = true;
+        [System.NonSerialized]
+        public MovementCapabilities movementCapabilities = MovementCapabilities.All;
 
         private void Awake()
         {
+            instance = this;
             rb = GetComponent<Rigidbody>();
         }
 
@@ -74,14 +76,14 @@ namespace Boids
         private void FixedUpdate()
         {
             //rb.MovePosition(moveVector * moveSpeed * Time.fixedDeltaTime);
-            if(canMoveHorizontal)
+
+            var moveVector = new Vector3(Mathf.Clamp(this.moveVector.x, movementCapabilities.HasFlag(MovementCapabilities.RotateLeft) ? -1 : 0, movementCapabilities.HasFlag(MovementCapabilities.RotateRight) ? 1 : 0), Mathf.Clamp(this.moveVector.y, movementCapabilities.HasFlag(MovementCapabilities.Backward) ? -1 : 0, movementCapabilities.HasFlag(MovementCapabilities.Forward) ? 1 : 0), Mathf.Clamp(this.moveVector.z, movementCapabilities.HasFlag(MovementCapabilities.Down) ? -1 : 0, movementCapabilities.HasFlag(MovementCapabilities.Up) ? 1 : 0));
+
             rb.AddRelativeForce(new Vector3(0, 0, moveVector.y) * moveSpeed);
-            if(canMoveVertical)
             rb.AddRelativeForce(new Vector3(0, moveVector.z, 0) * ascendVelocity);
-            if(canRotate)
             rb.AddRelativeTorque(new Vector3(0, moveVector.x, 0) * turningSpeed);
 
-            var motorSpeed = moveVector.magnitude;
+            var motorSpeed = moveVector.normalized.magnitude;
 
             float rotorSpeed = rotorRotationSpeed * motorSpeed;
 
@@ -97,6 +99,25 @@ namespace Boids
                 rotorParticleSystem.Stop();
                 particlePlaying = false;
             }
+        }
+
+        public void KillMomentum()
+        {
+            rb.velocity = Vector3.zero;
+            rb.ResetInertiaTensor();
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        [System.Flags]
+        public enum MovementCapabilities
+        {
+            Forward=1,
+            Backward=2,
+            RotateLeft=4,
+            RotateRight=8,
+            Up=16,
+            Down=32,
+            All = Forward | Backward | RotateLeft | RotateRight | Up | Down,
         }
     }
 }

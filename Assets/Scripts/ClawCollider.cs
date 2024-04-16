@@ -29,6 +29,7 @@ namespace Boids
             if (!grabHandler || hookController.IsHooked) hookController.RetractHook();
             else
             {
+                SubmarineControl.Instance.KillMomentum();
                 var distance = other.transform.position - hookController.transform.position;
                 distance.y = Mathf.Abs(distance.y) - Mathf.Abs(grabTransform.localPosition.y);
                 hookController.SetRopeExtension(distance.y);
