@@ -66,7 +66,8 @@ namespace Boids
                 if (hookController.CanExtendHook)
                 {
                     hookController.ExtendHook();
-                }else if (hookController.IsHooked)
+                }
+                else if (hookController.IsHooked)
                 {
                     hookController.clawCollider.ReleaseGrab();
                 }
@@ -111,12 +112,12 @@ namespace Boids
         [System.Flags]
         public enum MovementCapabilities
         {
-            Forward=1,
-            Backward=2,
-            RotateLeft=4,
-            RotateRight=8,
-            Up=16,
-            Down=32,
+            Forward = 1,
+            Backward = 2,
+            RotateLeft = 4,
+            RotateRight = 8,
+            Up = 16,
+            Down = 32,
             All = Forward | Backward | RotateLeft | RotateRight | Up | Down,
         }
     }

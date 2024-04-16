@@ -32,7 +32,7 @@ namespace Boids
 
             float distance = Mathf.Abs(transform.position.y - startHeight);
 
-            if(distance >= openHeight)
+            if (distance >= openHeight)
             {
                 var position = transform.position;
                 position.y = startHeight + openHeight;

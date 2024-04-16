@@ -50,7 +50,7 @@ namespace Boids
 
         private void OnDisable()
         {
-            if(boidsBuffer != null)
+            if (boidsBuffer != null)
             {
                 boidsBuffer.Release();
                 boidsBuffer = null;
@@ -113,7 +113,7 @@ namespace Boids
             Gizmos.DrawWireCube(transform.position, bounds);
         }
 
-        struct KelpData
+        private struct KelpData
         {
             public Vector3 position;
             public float height;
