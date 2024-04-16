@@ -280,7 +280,7 @@ Shader "Unlit/BoidShader"
                 fixed4 col = float4(i.color * _TintMultiplier.xxx, 1);
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
-                return tex2D(_MainTex, i.uv) + col;
+                return (tex2D(_MainTex, i.uv) + col) * ndotl;
             }
             ENDCG
         }

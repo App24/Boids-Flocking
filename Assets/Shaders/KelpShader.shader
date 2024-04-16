@@ -16,8 +16,13 @@ Shader "Unlit/KelpShader"
             #pragma fragment frag
             // make fog work
             #pragma multi_compile_fog
+            
+            #pragma target 4.5
 
             #include "UnityCG.cginc"
+
+            #include "UnityPBSLighting.cginc"
+            #include "AutoLight.cginc"
 
             struct appdata
             {
@@ -32,16 +37,28 @@ Shader "Unlit/KelpShader"
                 float4 vertex : SV_POSITION;
             };
 
+            struct KelpData{
+                float3 positon;
+                float scale;
+            };
+
             float4 _KelpColor;
 
-            v2f vert (appdata v)
+            StructuredBuffer<KelpData> kelpData;
+
+            v2f vert (appdata v, uint instanceID : SV_InstanceID)
             {
                 v2f o;
                 float4 position = v.vertex;
-                float basePosition = v.vertex.y + 0.5;
-                position.x += sin(_Time.y + v.vertex.y) * basePosition;
-                position.z += sin(_Time.z + v.vertex.y) * basePosition;
-                o.vertex = UnityObjectToClipPos(position);
+                position.y += 0.5;
+
+                position.z += sin((v.vertex.z + instanceID + _Time.y * .5)*2) * position.y;
+                position.x += sin((v.vertex.x + instanceID + _Time.y * 1)*0.2) * position.y;
+                position.y *= kelpData[instanceID].scale;
+
+                float4 worldPosition = float4(kelpData[instanceID].positon + position, 1);
+
+                o.vertex = UnityObjectToClipPos(worldPosition);
                 o.uv = v.uv;
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
@@ -49,11 +66,13 @@ Shader "Unlit/KelpShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                float3 lightDir = _WorldSpaceLightPos0.xyz;
+                float ndotl = DotClamped(lightDir, normalize(float3(0, 1, 0)));
                 // sample the texture
                 fixed4 col = float4(_KelpColor.xyz, 1);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                return col * ndotl;
             }
             ENDCG
         }

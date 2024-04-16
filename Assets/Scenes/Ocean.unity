@@ -982,12 +982,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627bc16331a176448a9f79ef5fbfb489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounds: {x: 822.8, y: 20, z: 631.5}
-  kelpPrefab: {fileID: 3445695750435999142, guid: 32d5c17d5e886f844aa3b95940e7cb75,
-    type: 3}
-  kelpCount: 1000
-  minKelpHeight: 10
-  maxKelpHeight: 40
+  bounds: {x: 822.8, y: 100, z: 631.5}
+  kelpCount: 5000
+  minKelpHeight: 5
+  maxKelpHeight: 50
+  kelpMaterial: {fileID: 2100000, guid: bc7858416294f2b48a5f98ce37cb48ea, type: 2}
+  kelpMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &749913010
 Transform:
   m_ObjectHideFlags: 0
@@ -1328,7 +1328,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1078234640}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.06141885, y: 1.4793361e-27, z: -7.492268e-28, w: 0.9981121}
+  m_LocalRotation: {x: 0.061418854, y: -0.0000000037182577, z: 2.2880309e-10, w: 0.9981121}
   m_LocalPosition: {x: 0, y: 18, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1403,6 +1403,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1088115351796472926, guid: dca01abec3ae3014f88564ac921f0a60,
+        type: 3}
+      propertyPath: moveSpeed
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1088115351796472926, guid: dca01abec3ae3014f88564ac921f0a60,
+        type: 3}
+      propertyPath: ascendVelocity
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 1314189317746323529, guid: dca01abec3ae3014f88564ac921f0a60,
         type: 3}
@@ -1794,7 +1804,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341552528}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.06141885, y: 1.4793361e-27, z: -7.492268e-28, w: 0.9981121}
+  m_LocalRotation: {x: 0.061418854, y: -0.0000000037182577, z: 2.2880309e-10, w: 0.9981121}
   m_LocalPosition: {x: 0, y: 18, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2369,6 +2379,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1972241067
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1972241069}
+  - component: {fileID: 1972241068}
+  m_Layer: 0
+  m_Name: KelpGenerator (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1972241068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972241067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627bc16331a176448a9f79ef5fbfb489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounds: {x: 822.8, y: 100, z: 210.5}
+  kelpCount: 3000
+  minKelpHeight: 5
+  maxKelpHeight: 50
+  kelpMaterial: {fileID: 2100000, guid: bc7858416294f2b48a5f98ce37cb48ea, type: 2}
+  kelpMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1972241069
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972241067}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 331}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2078639447
 GameObject:
   m_ObjectHideFlags: 0
@@ -2494,3 +2554,4 @@ SceneRoots:
   - {fileID: 157835355}
   - {fileID: 1033810977}
   - {fileID: 749913010}
+  - {fileID: 1972241069}
