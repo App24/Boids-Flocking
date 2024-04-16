@@ -35,11 +35,14 @@ Shader "Unlit/KelpShader"
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
+                float3 color : TEXCOORD1;
             };
 
             struct KelpData{
                 float3 positon;
                 float scale;
+                float3 color;
+                float3 tipColor;
             };
 
             float4 _KelpColor;
@@ -52,14 +55,19 @@ Shader "Unlit/KelpShader"
                 float4 position = v.vertex;
                 position.y += 0.5;
 
+                KelpData kelp = kelpData[instanceID];
+
+                float3 color = lerp(kelp.color, kelp.tipColor, clamp(position.y, 0, 1));
+
                 position.z += sin((v.vertex.z + instanceID + _Time.y * .5)*2) * position.y;
                 position.x += sin((v.vertex.x + instanceID + _Time.y * 1)*0.2) * position.y;
-                position.y *= kelpData[instanceID].scale;
+                position.y *= kelp.scale;
 
-                float4 worldPosition = float4(kelpData[instanceID].positon + position, 1);
+                float4 worldPosition = float4(kelp.positon + position, 1);
 
                 o.vertex = UnityObjectToClipPos(worldPosition);
                 o.uv = v.uv;
+                o.color = color;
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -69,7 +77,7 @@ Shader "Unlit/KelpShader"
                 float3 lightDir = _WorldSpaceLightPos0.xyz;
                 float ndotl = DotClamped(lightDir, normalize(float3(0, 1, 0)));
                 // sample the texture
-                fixed4 col = float4(_KelpColor.xyz, 1);
+                fixed4 col = float4(i.color, 1);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col * ndotl;

@@ -982,12 +982,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627bc16331a176448a9f79ef5fbfb489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounds: {x: 822.8, y: 100, z: 631.5}
+  bounds: {x: 1000, y: 100, z: 650}
   kelpCount: 5000
   minKelpHeight: 5
   maxKelpHeight: 50
   kelpMaterial: {fileID: 2100000, guid: bc7858416294f2b48a5f98ce37cb48ea, type: 2}
   kelpMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  kelpColors:
+  - serializedVersion: 2
+    key0: {r: 0.3204999, g: 1, b: 0, a: 1}
+    key1: {r: 0.14047459, g: 0.5849056, b: 0.09104664, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!4 &749913010
 Transform:
   m_ObjectHideFlags: 0
@@ -997,7 +1027,7 @@ Transform:
   m_GameObject: {fileID: 749913008}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -159}
+  m_LocalPosition: {x: 0, y: 0, z: -158.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2408,12 +2438,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627bc16331a176448a9f79ef5fbfb489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounds: {x: 822.8, y: 100, z: 210.5}
+  bounds: {x: 1000, y: 100, z: 280}
   kelpCount: 3000
   minKelpHeight: 5
   maxKelpHeight: 50
   kelpMaterial: {fileID: 2100000, guid: bc7858416294f2b48a5f98ce37cb48ea, type: 2}
   kelpMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  kelpColors:
+  - serializedVersion: 2
+    key0: {r: 0.3204999, g: 1, b: 0, a: 1}
+    key1: {r: 0.14047459, g: 0.5849056, b: 0.09104664, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!4 &1972241069
 Transform:
   m_ObjectHideFlags: 0
@@ -2423,7 +2483,7 @@ Transform:
   m_GameObject: {fileID: 1972241067}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 331}
+  m_LocalPosition: {x: 0, y: 0, z: 351}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

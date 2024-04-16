@@ -32,6 +32,12 @@ namespace Boids
 
         private List<KelpData> kelpDatas = new List<KelpData>();
 
+        [SerializeField]
+        private Color baseColor;
+
+        [SerializeField]
+        private Color tipColor;
+
         private void Awake()
         {
             boidInstancedMaterial = new Material(kelpMaterial);
@@ -85,10 +91,15 @@ namespace Boids
 
                 float height = Random.Range(minKelpHeight, maxKelpHeight);
 
+                var color = baseColor;
+                var tipColor = this.tipColor;
+
                 kelpDatas.Add(new KelpData()
                 {
                     position = position,
                     height = height,
+                    color = new Vector3(color.r, color.g, color.b),
+                    tipColor = new Vector3(tipColor.r, tipColor.g, tipColor.b)
                 });
             }
 
@@ -117,8 +128,10 @@ namespace Boids
         {
             public Vector3 position;
             public float height;
+            public Vector3 color;
+            public Vector3 tipColor;
 
-            public static int Size => sizeof(float) * 4;
+            public static int Size => sizeof(float) * 10;
         }
     }
 }
