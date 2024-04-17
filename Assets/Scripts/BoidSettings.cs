@@ -14,6 +14,8 @@ namespace Boids
         public float viewRadius = 2;
         public float avoidanceRadius = 1;
 
+        public float targetWeight;
+
         public float alignWeight = 1;
         public float cohesionWeight = 1;
         public float seperateWeight = 1;
@@ -37,7 +39,8 @@ namespace Boids
                 maxSteerForce = maxSteerForce,
                 seperateWeight = seperateWeight,
                 viewRadius = viewRadius,
-                avoidCollisionWeight = avoidCollisionWeight
+                avoidCollisionWeight = avoidCollisionWeight,
+                targetWeight = targetWeight
             };
         }
 
@@ -62,9 +65,11 @@ namespace Boids
 
         public float avoidCollisionWeight;
 
+        public float targetWeight;
+
         public static int GetSize()
         {
-            return sizeof(float) * 9;
+            return sizeof(float) * 10;
         }
     }
 }

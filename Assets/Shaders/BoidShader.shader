@@ -59,6 +59,7 @@ Shader "Unlit/BoidShader"
                 uint boidSettingIndex;
                 uint boidGroup;
                 uint ignoreOtherBoids;
+                float3 targetPosition;
             };
 
             struct BoidSettings {

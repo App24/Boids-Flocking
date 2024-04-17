@@ -16,6 +16,8 @@ namespace Boids
         public Color color;
         public uint boidGroup;
         public bool ignoreOtherBoids;
+        public bool goToTarget;
+        public Vector3 targetPosition;
 
         public BoidBody(Vector3 position, Vector3 forward, BoidSettings boidSettings)
         {
@@ -28,6 +30,9 @@ namespace Boids
 
         public BoidData ToBoidData()
         {
+            uint flags = 0;
+            if (ignoreOtherBoids) flags |= 1;
+            if (goToTarget) flags |= 2;
             return new BoidData()
             {
                 position = position,
@@ -36,7 +41,8 @@ namespace Boids
                 dir = forward,
                 color = new Vector3(color.r, color.g, color.b),
                 boidGroup = boidGroup,
-                ignoreOtherBoids = (uint)(ignoreOtherBoids ? 1 : 0)
+                flags = flags,
+                targetPosition = targetPosition
             };
         }
 
@@ -60,13 +66,14 @@ namespace Boids
         public uint listIndex;
         public uint boidSettingIndex;
         public uint boidGroup;
-        public uint ignoreOtherBoids;
+        public uint flags;
+        public Vector3 targetPosition;
         /*public uint headingForCollision;
         public Vector3 collisionAvoidDir;*/
 
         public static int GetSize()
         {
-            return sizeof(float) * 15 + sizeof(uint) * 4;
+            return sizeof(float) * 18 + sizeof(uint) * 4;
         }
     }
 }

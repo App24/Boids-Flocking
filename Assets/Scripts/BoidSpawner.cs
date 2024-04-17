@@ -25,6 +25,12 @@ namespace Boids
         [SerializeField]
         private bool ignoreOtherBoids = true;
 
+        [SerializeField]
+        private bool goToTarget = false;
+
+        [SerializeField]
+        private Transform targetPosition;
+
         private List<BoidBody> boids = new List<BoidBody>();
 
         private static uint boidGroup;
@@ -46,6 +52,9 @@ namespace Boids
                 boid.color = boidColor;
                 boid.boidGroup = boidGroup;
                 boid.ignoreOtherBoids = ignoreOtherBoids;
+                boid.goToTarget = goToTarget;
+                if(targetPosition)
+                boid.targetPosition = targetPosition.position;
                 boids.Add(boid);
             }
             BoidsManager.Instance.AddBoids(boids);
@@ -76,6 +85,9 @@ namespace Boids
             {
                 boid.color = boidColor;
                 boid.ignoreOtherBoids = ignoreOtherBoids;
+                boid.goToTarget = goToTarget;
+                if (targetPosition)
+                    boid.targetPosition = targetPosition.position;
             }
             if (BoidsManager.Instance)
                 BoidsManager.Instance.SetBoidsBufferToRecreate();
