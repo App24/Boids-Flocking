@@ -41,8 +41,8 @@ Shader "Unlit/KelpShader"
             struct KelpData{
                 float2 positon;
                 float scale;
-                float3 color;
-                float3 tipColor;
+                uint color;
+                uint tipColor;
             };
 
             float4 _KelpColor;
@@ -57,6 +57,14 @@ Shader "Unlit/KelpShader"
 	        float _FrequencyZ;
 	        float _AmplitudeZ;
 
+            float3 processColor(uint color){
+                uint r = color & 0xff;
+                uint g = (color >> 8) & 0xff;
+                uint b = (color >> 16) & 0xff;
+
+                return float3(r/255.f, g/255.f, b/255.f);
+            }
+
             v2f vert (appdata v, uint instanceID : SV_InstanceID)
             {
                 v2f o;
@@ -65,7 +73,7 @@ Shader "Unlit/KelpShader"
 
                 KelpData kelp = storedData[instanceID];
 
-                float3 color = lerp(kelp.color, kelp.tipColor, clamp(position.y, 0, 1));
+                float3 color = lerp(processColor(kelp.color), processColor(kelp.tipColor), clamp(position.y, 0, 1));
 
                 position.z += sin((v.vertex.z + instanceID + _Time.y * _SpeedX)*_FrequencyX) * position.y * _AmplitudeX;
                 position.x += sin((v.vertex.x + instanceID + _Time.y * _SpeedZ)*_FrequencyZ) * position.y * _AmplitudeZ;

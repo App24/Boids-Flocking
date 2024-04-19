@@ -13,8 +13,8 @@ namespace Boids
         public Vector3 position;
         public Vector3 forward;
         public Quaternion rotation;
-        public Color color;
-        public uint boidGroup;
+        public Color32 color;
+        public ushort boidGroup;
         public bool ignoreOtherBoids;
         public bool goToTarget;
         public Vector3 targetPosition;
@@ -30,18 +30,19 @@ namespace Boids
 
         public BoidData ToBoidData()
         {
-            uint flags = 0;
+            ushort flags = 0;
             if (ignoreOtherBoids) flags |= 1;
             if (goToTarget) flags |= 2;
+            uint extraData = (uint)((flags << 16) + boidGroup);
+            uint color = (uint)((0xff << 24) + (this.color.b << 16) + (this.color.g << 8) + this.color.r);
             return new BoidData()
             {
                 position = position,
                 velocity = velocity,
                 acceleration = acceleration,
                 dir = forward,
-                color = new Vector3(color.r, color.g, color.b),
-                boidGroup = boidGroup,
-                flags = flags,
+                color = color,
+                extraData = extraData,
                 targetPosition = targetPosition
             };
         }
@@ -62,18 +63,15 @@ namespace Boids
         public Vector3 velocity;
         public Vector3 acceleration;
         public Vector3 dir;
-        public Vector3 color;
+        public uint color;
         public uint listIndex;
         public uint boidSettingIndex;
-        public uint boidGroup;
-        public uint flags;
+        public uint extraData; // flags on top half, boid group on bottom half
         public Vector3 targetPosition;
-        /*public uint headingForCollision;
-        public Vector3 collisionAvoidDir;*/
 
         public static int GetSize()
         {
-            return sizeof(float) * 18 + sizeof(uint) * 4;
+            return sizeof(float) * 15 + sizeof(uint) * 4;
         }
     }
 }

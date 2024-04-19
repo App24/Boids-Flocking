@@ -33,7 +33,7 @@ namespace Boids
 
         private List<BoidBody> boids = new List<BoidBody>();
 
-        private static uint boidGroup;
+        private static ushort boidGroup;
 
         private void Start()
         {

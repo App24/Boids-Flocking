@@ -14,10 +14,10 @@ namespace Boids
         private float maxKelpHeight;
 
         [SerializeField]
-        private Color baseColor;
+        private Color32 baseColor;
 
         [SerializeField]
-        private Color tipColor;
+        private Color32 tipColor;
 
         [SerializeField]
         private ModulationData xModulation = new ModulationData() { speed = .5f, frequency = 2, amplitude = 1 };
@@ -39,15 +39,15 @@ namespace Boids
 
                 float height = Random.Range(minKelpHeight, maxKelpHeight);
 
-                var color = baseColor;
-                var tipColor = this.tipColor;
+                uint color = (uint)((0xff << 24) + (this.baseColor.b << 16) + (this.baseColor.g << 8) + this.baseColor.r);
+                uint tipColor = (uint)((0xff << 24) + (this.tipColor.b << 16) + (this.tipColor.g << 8) + this.tipColor.r);
 
                 storedData.Add(new KelpData()
                 {
                     position = position,
                     height = height,
-                    color = new Vector3(color.r, color.g, color.b),
-                    tipColor = new Vector3(tipColor.r, tipColor.g, tipColor.b)
+                    color = color,
+                    tipColor = tipColor
                 });
             }
 
@@ -77,10 +77,10 @@ namespace Boids
         {
             public Vector2 position;
             public float height;
-            public Vector3 color;
-            public Vector3 tipColor;
+            public uint color;
+            public uint tipColor;
 
-            public static int Size => sizeof(float) * 9;
+            public static int Size => sizeof(float) * 3 + sizeof(uint) * 2;
         }
 
         [System.Serializable]

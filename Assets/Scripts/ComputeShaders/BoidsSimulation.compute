@@ -7,11 +7,10 @@ struct Boid
     float3 velocity;
     float3 acceleration;
     float3 dir;
-    float3 color;
+    uint color;
     uint listIndex;
     uint boidSettingIndex;
-    uint boidGroup;
-    uint flags;
+    uint extraData;
     float3 targetPosition;
 };
 
@@ -58,10 +57,19 @@ float3 SteerTowards(float3 vec, Boid boid, BoidSettings settings)
     return v;
 }
 
+uint getBoidGroup(uint extraData){
+    return extraData & 0xffff;
+}
+
+bool getFlag(uint extraData, uint flagBit){
+    uint flags = (extraData >> 16) & 0xffff;
+    return (flags & flagBit) == flagBit;
+}
+
 void UpdateBoid(inout Boid boid, BoidSettings settings, BoidCollisionData collisionData, float3 flockCentre, uint numFlockmates, float3 avgFlockHeading, float3 avgAvoidanceHeading)
 {
     float3 acceleration = 0;
-    bool goToTarget = (boid.flags & 2) == 2;
+    bool goToTarget = getFlag(boid.extraData, 2);
     
     if (goToTarget) {
         float3 offsetToTarget = (boid.targetPosition - boid.position);
@@ -105,11 +113,13 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float3 avgAvoidanceHeading = 0;
     Boid boid = boids[id.x];
     BoidSettings settings = boidSettings[boid.boidSettingIndex];
-    bool ignoreOtherBoids = (boid.flags & 1) == 1;
+    bool ignoreOtherBoids = getFlag(boid.extraData, 1);
+    uint currentBoidGroup = getBoidGroup(boid.extraData);
     for (uint i = 0; i < numBoids; i++)
     {
         Boid otherBoid = boids[i];
-        if (boid.listIndex != otherBoid.listIndex && (ignoreOtherBoids && boid.boidGroup == otherBoid.boidGroup))
+        uint otherBoidGroup = getBoidGroup(otherBoid.extraData);
+        if (boid.listIndex != otherBoid.listIndex && (ignoreOtherBoids && currentBoidGroup == otherBoidGroup))
         {
             float3 offset = otherBoid.position - boid.position;
             float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;

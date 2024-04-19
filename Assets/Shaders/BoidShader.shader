@@ -54,11 +54,10 @@ Shader "Unlit/BoidShader"
                 float3 velocity;
                 float3 acceleration;
                 float3 dir;
-                float3 color;
+                uint color;
                 uint listIndex; //unused
                 uint boidSettingIndex; //unused
-                uint boidGroup; //unused
-                uint ignoreOtherBoids; //unused
+                uint extraData; //unused
                 float3 targetPosition; //unused
             };
 
@@ -269,7 +268,17 @@ Shader "Unlit/BoidShader"
                 //UNITY_TRANSFER_FOG(o,o.vertex);
                 o.worldPos = worldPos;
                 o.uv = v.uv;
-                o.color = boid.color;
+
+                uint preColor = boid.color;
+
+                uint r = preColor & 0xff;
+                uint g = (preColor >> 8) & 0xff;
+                uint b = (preColor >> 16) & 0xff;
+                uint a = (preColor >> 24) & 0xff;
+
+                float3 color = float3(r/255.f, g/255.f, b/255.f);
+
+                o.color = color;
                 return o;
             }
 
