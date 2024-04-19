@@ -13,7 +13,7 @@ namespace Boids
         [SerializeField]
         private float openHeight;
 
-        private float startHeight;
+        private Vector3 startPosition;
 
         private bool fullyOpened;
 
@@ -21,7 +21,7 @@ namespace Boids
 
         private void Start()
         {
-            startHeight = transform.position.y;
+            startPosition = transform.position;
         }
 
         private void Update()
@@ -33,13 +33,10 @@ namespace Boids
                 return;
             }
 
-            float distance = Mathf.Abs(transform.position.y - startHeight);
+            float distance = Vector3.Distance(transform.position, startPosition);
 
             if (distance >= openHeight)
             {
-                var position = transform.position;
-                position.y = startHeight + openHeight;
-                transform.position = position;
                 fullyOpened = true;
                 SubmarineControl.Instance.hookController.clawCollider.ReleaseGrab();
                 onFullyOpened.Invoke();

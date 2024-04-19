@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Boids
 {
@@ -23,7 +24,8 @@ namespace Boids
         private Color boidColor;
 
         [SerializeField]
-        private bool ignoreOtherBoids = true;
+        [FormerlySerializedAs("ignoreOtherBoids")]
+        private bool ignoreOtherBoidGroups = true;
 
         [SerializeField]
         private bool goToTarget = false;
@@ -51,7 +53,7 @@ namespace Boids
                 var boid = new BoidBody(transform.position + position, Random.rotation * Vector3.forward, boidSettings);
                 boid.color = boidColor;
                 boid.boidGroup = boidGroup;
-                boid.ignoreOtherBoids = ignoreOtherBoids;
+                boid.ignoreOtherBoids = ignoreOtherBoidGroups;
                 boid.goToTarget = goToTarget;
                 if(targetPosition)
                 boid.targetPosition = targetPosition.position;
@@ -95,7 +97,7 @@ namespace Boids
             foreach (var boid in boids)
             {
                 boid.color = boidColor;
-                boid.ignoreOtherBoids = ignoreOtherBoids;
+                boid.ignoreOtherBoids = ignoreOtherBoidGroups;
                 boid.goToTarget = goToTarget;
                 if (targetPosition)
                     boid.targetPosition = targetPosition.position;

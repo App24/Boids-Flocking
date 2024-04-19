@@ -119,7 +119,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     {
         Boid otherBoid = boids[i];
         uint otherBoidGroup = getBoidGroup(otherBoid.extraData);
-        if (boid.listIndex != otherBoid.listIndex && (ignoreOtherBoids && currentBoidGroup == otherBoidGroup))
+        if (boid.listIndex != otherBoid.listIndex && (!ignoreOtherBoids || (ignoreOtherBoids && currentBoidGroup == otherBoidGroup)))
         {
             float3 offset = otherBoid.position - boid.position;
             float sqrDst = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;

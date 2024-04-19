@@ -100,9 +100,9 @@ Shader "Unlit/BoidShader"
 	        float _HeadLimit;
 
             sampler2D _MainTex;
-	float4 _MainTex_ST;
+	        float4 _MainTex_ST;
 
-    float _TintMultiplier;
+            float _TintMultiplier;
 
             float4 RotateAroundYInDegrees (float4 vertex, float degrees) {
                 float alpha = degrees * UNITY_PI / 180.0;
