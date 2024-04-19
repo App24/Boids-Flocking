@@ -17,7 +17,7 @@ MonoBehaviour:
   maxSteerForce: 10
   viewRadius: 15
   avoidanceRadius: 5
-  targetWeight: 0.1
+  targetWeight: 0.15
   alignWeight: 1
   cohesionWeight: 0.9
   seperateWeight: 2
