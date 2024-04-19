@@ -28,8 +28,11 @@ Shader "Unlit/BoidShader"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_fog
             
             #pragma target 4.5
+
+            #include "UnityCG.cginc"
 
             #include "UnityPBSLighting.cginc"
             #include "AutoLight.cginc"
@@ -44,8 +47,9 @@ Shader "Unlit/BoidShader"
             {
                 float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
-                float4 worldPos : TEXCOORD1;
-                float3 color : TEXCOORD2;
+                UNITY_FOG_COORDS(1)
+                float4 worldPos : TEXCOORD2;
+                float3 color : TEXCOORD3;
             };
 
             struct Boid
@@ -279,6 +283,7 @@ Shader "Unlit/BoidShader"
                 float3 color = float3(r/255.f, g/255.f, b/255.f);
 
                 o.color = color;
+                UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
@@ -289,8 +294,9 @@ Shader "Unlit/BoidShader"
                 // sample the texture
                 fixed4 col = float4(i.color * _TintMultiplier.xxx, 1);
                 // apply fog
-                //UNITY_APPLY_FOG(i.fogCoord, col);
-                return (tex2D(_MainTex, i.uv) + col) * ndotl;
+                fixed4 totalCol = (tex2D(_MainTex, i.uv) + col);
+                UNITY_APPLY_FOG(i.fogCoord, totalCol);
+                return totalCol;
             }
             ENDCG
         }
