@@ -39,7 +39,7 @@ Shader "Unlit/KelpShader"
             };
 
             struct KelpData{
-                float3 positon;
+                float2 positon;
                 float scale;
                 float3 color;
                 float3 tipColor;
@@ -47,7 +47,15 @@ Shader "Unlit/KelpShader"
 
             float4 _KelpColor;
 
-            StructuredBuffer<KelpData> kelpData;
+            StructuredBuffer<KelpData> storedData;
+            
+            float _SpeedX;
+	        float _FrequencyX;
+	        float _AmplitudeX;
+            
+            float _SpeedZ;
+	        float _FrequencyZ;
+	        float _AmplitudeZ;
 
             v2f vert (appdata v, uint instanceID : SV_InstanceID)
             {
@@ -55,15 +63,15 @@ Shader "Unlit/KelpShader"
                 float4 position = v.vertex;
                 position.y += 0.5;
 
-                KelpData kelp = kelpData[instanceID];
+                KelpData kelp = storedData[instanceID];
 
                 float3 color = lerp(kelp.color, kelp.tipColor, clamp(position.y, 0, 1));
 
-                position.z += sin((v.vertex.z + instanceID + _Time.y * .5)*2) * position.y;
-                position.x += sin((v.vertex.x + instanceID + _Time.y * 1)*0.2) * position.y;
+                position.z += sin((v.vertex.z + instanceID + _Time.y * _SpeedX)*_FrequencyX) * position.y * _AmplitudeX;
+                position.x += sin((v.vertex.x + instanceID + _Time.y * _SpeedZ)*_FrequencyZ) * position.y * _AmplitudeZ;
                 position.y *= kelp.scale;
 
-                float4 worldPosition = float4(kelp.positon + position, 1);
+                float4 worldPosition = float4(float3(kelp.positon.x, 0, kelp.positon.y) + position, 1);
 
                 o.vertex = UnityObjectToClipPos(worldPosition);
                 o.uv = v.uv;

@@ -61,7 +61,7 @@ float3 SteerTowards(float3 vec, Boid boid, BoidSettings settings)
 void UpdateBoid(inout Boid boid, BoidSettings settings, BoidCollisionData collisionData, float3 flockCentre, uint numFlockmates, float3 avgFlockHeading, float3 avgAvoidanceHeading)
 {
     float3 acceleration = 0;
-    uint goToTarget = (boid.flags & 2) == 2;
+    bool goToTarget = (boid.flags & 2) == 2;
     
     if (goToTarget) {
         float3 offsetToTarget = (boid.targetPosition - boid.position);
@@ -105,7 +105,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float3 avgAvoidanceHeading = 0;
     Boid boid = boids[id.x];
     BoidSettings settings = boidSettings[boid.boidSettingIndex];
-    uint ignoreOtherBoids = (boid.flags & 1) == 1;
+    bool ignoreOtherBoids = (boid.flags & 1) == 1;
     for (uint i = 0; i < numBoids; i++)
     {
         Boid otherBoid = boids[i];

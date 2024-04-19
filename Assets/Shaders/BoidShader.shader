@@ -55,11 +55,11 @@ Shader "Unlit/BoidShader"
                 float3 acceleration;
                 float3 dir;
                 float3 color;
-                uint listIndex;
-                uint boidSettingIndex;
-                uint boidGroup;
-                uint ignoreOtherBoids;
-                float3 targetPosition;
+                uint listIndex; //unused
+                uint boidSettingIndex; //unused
+                uint boidGroup; //unused
+                uint ignoreOtherBoids; //unused
+                float3 targetPosition; //unused
             };
 
             struct BoidSettings {

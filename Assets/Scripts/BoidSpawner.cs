@@ -81,6 +81,17 @@ namespace Boids
         private void OnValidate()
         {
             if (!Application.isPlaying) return;
+            RecreateBoids();
+        }
+
+        public void ChangeTargetPosition(Transform transform)
+        {
+            this.targetPosition = transform;
+            RecreateBoids();
+        }
+
+        private void RecreateBoids()
+        {
             foreach (var boid in boids)
             {
                 boid.color = boidColor;

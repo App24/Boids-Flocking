@@ -4,13 +4,8 @@ using UnityEngine;
 
 namespace Boids
 {
-    public class KelpGenerator : MonoBehaviour
+    public class KelpGenerator : GPUGenerator<KelpGenerator.KelpData>
     {
-        [SerializeField]
-        private Vector3 bounds;
-
-        [SerializeField]
-        private int kelpCount;
 
         [SerializeField]
         private float minKelpHeight;
@@ -19,82 +14,35 @@ namespace Boids
         private float maxKelpHeight;
 
         [SerializeField]
-        private Material kelpMaterial;
-
-        [SerializeField]
-        private Mesh kelpMesh;
-
-        private Material boidInstancedMaterial;
-        private uint[] args;
-        private GraphicsBuffer argsBuffer;
-
-        private ComputeBuffer boidsBuffer;
-
-        private List<KelpData> kelpDatas = new List<KelpData>();
-
-        [SerializeField]
         private Color baseColor;
 
         [SerializeField]
         private Color tipColor;
 
-        private void Awake()
+        [SerializeField]
+        private ModulationData xModulation = new ModulationData() { speed = .5f, frequency = 2, amplitude = 1 };
+
+        [SerializeField]
+        private ModulationData zModulation = new ModulationData() { speed = 1, frequency = .2f, amplitude = 1 };
+
+        public override int DataSize => KelpData.Size;
+
+        protected override void SpawnObjects()
         {
-            boidInstancedMaterial = new Material(kelpMaterial);
-
-            args = new uint[5] { 0, 0, 0, 0, 0 };
-            args[0] = (uint)kelpMesh.GetIndexCount(0);
-            args[1] = (uint)0;
-            args[2] = (uint)kelpMesh.GetIndexStart(0);
-            args[3] = (uint)kelpMesh.GetBaseVertex(0);
-        }
-
-        private void OnEnable()
-        {
-            RecreateBoidsBuffer();
-        }
-
-        private void OnDisable()
-        {
-            if (boidsBuffer != null)
-            {
-                boidsBuffer.Release();
-                boidsBuffer = null;
-            }
-
-            if (argsBuffer != null)
-            {
-                argsBuffer.Release();
-                argsBuffer = null;
-            }
-        }
-
-        private void RecreateBoidsBuffer()
-        {
-            if (boidsBuffer != null)
-            {
-                boidsBuffer.Release();
-            }
-
-            if (argsBuffer != null)
-                argsBuffer.Release();
-
-            kelpDatas.Clear();
-
             var halfBounds = bounds / 2f;
 
-            for (int i = 0; i < kelpCount; i++)
+            for (int i = 0; i < spawnCount; i++)
             {
-                var position = new Vector3(Random.Range(-1f, 1), 0, Random.Range(-1f, 1));
+                var position = new Vector2(Random.Range(-1f, 1), Random.Range(-1f, 1));
                 position.x *= halfBounds.x;
-                position.z *= halfBounds.z;
+                position.y *= halfBounds.z;
 
                 float height = Random.Range(minKelpHeight, maxKelpHeight);
 
                 var color = baseColor;
                 var tipColor = this.tipColor;
 
-                kelpDatas.Add(new KelpData()
+                storedData.Add(new KelpData()
                 {
                     position = position,
                     height = height,
@@ -103,35 +51,42 @@ namespace Boids
                 });
             }
 
-            boidsBuffer = new ComputeBuffer(kelpDatas.Count, KelpData.Size);
-            boidsBuffer.SetData(kelpDatas);
-            boidInstancedMaterial.SetBuffer("kelpData", boidsBuffer);
+            instancedMaterial.SetFloat("_SpeedX", xModulation.speed);
+            instancedMaterial.SetFloat("_FrequencyX", xModulation.frequency);
+            instancedMaterial.SetFloat("_AmplitudeX", xModulation.amplitude);
 
-            argsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.IndirectArguments, 1, 5 * sizeof(uint));
-            args[1] = (uint)kelpDatas.Count;
-            argsBuffer.SetData(args);
+            instancedMaterial.SetFloat("_SpeedZ", zModulation.speed);
+            instancedMaterial.SetFloat("_FrequencyZ", zModulation.frequency);
+            instancedMaterial.SetFloat("_AmplitudeZ", zModulation.amplitude);
         }
 
-        private void Update()
+        private void OnValidate()
         {
-            Graphics.DrawMeshInstancedIndirect(kelpMesh, 0, boidInstancedMaterial, new Bounds(transform.position, bounds), argsBuffer);
+            if (!instancedMaterial) return;
+
+            instancedMaterial.SetFloat("_SpeedX", xModulation.speed);
+            instancedMaterial.SetFloat("_FrequencyX", xModulation.frequency);
+            instancedMaterial.SetFloat("_AmplitudeX", xModulation.amplitude);
+
+            instancedMaterial.SetFloat("_SpeedZ", zModulation.speed);
+            instancedMaterial.SetFloat("_FrequencyZ", zModulation.frequency);
+            instancedMaterial.SetFloat("_AmplitudeZ", zModulation.amplitude);
         }
 
-        private void OnDrawGizmosSelected()
+        public struct KelpData
         {
-            Gizmos.color = Color.green;
-
-            Gizmos.DrawWireCube(transform.position, bounds);
-        }
-
-        private struct KelpData
-        {
-            public Vector3 position;
+            public Vector2 position;
             public float height;
             public Vector3 color;
             public Vector3 tipColor;
 
-            public static int Size => sizeof(float) * 10;
+            public static int Size => sizeof(float) * 9;
+        }
+
+        [System.Serializable]
+        private struct ModulationData
+        {
+            public float speed, frequency, amplitude;
         }
     }
 }

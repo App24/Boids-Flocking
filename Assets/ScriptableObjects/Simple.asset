@@ -21,7 +21,7 @@ MonoBehaviour:
   alignWeight: 1
   cohesionWeight: 0.9
   seperateWeight: 2
-  avoidCollisionWeight: 1
+  avoidCollisionWeight: 20
   boundsRadius: 3
   collisionAvoidDst: 40
   collisonMask:

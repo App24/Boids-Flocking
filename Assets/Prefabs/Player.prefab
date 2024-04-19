@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8123085664264878610}
   - component: {fileID: 6732765648633340221}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1977619157198297173}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grab point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5145025186015606801}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Rope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 8783605364433104026}
   - component: {fileID: 3910316741876745486}
   - component: {fileID: 3672292612532421780}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 4817950000163211988}
   - component: {fileID: 6866931700805940234}
   - component: {fileID: 8597264672098909820}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 5041199574622355359}
   - component: {fileID: 6575292411993811974}
   - component: {fileID: 1525467058390074056}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 6840072618656051400}
   - component: {fileID: 3125890866505405542}
   - component: {fileID: 5254461752123734074}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Claw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -479,7 +479,7 @@ GameObject:
   - component: {fileID: 5542084174011059110}
   - component: {fileID: 2479262851343315019}
   - component: {fileID: 8091964018764708018}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5306,7 +5306,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5296862432927839808}
   - component: {fileID: 8552715306458693005}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5358,7 +5358,7 @@ GameObject:
   - component: {fileID: 2018816796393603535}
   - component: {fileID: 3258886451449407144}
   - component: {fileID: 3133007868708089559}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5441,7 +5441,7 @@ GameObject:
   - component: {fileID: 7803199569152478694}
   - component: {fileID: 5844938362170025260}
   - component: {fileID: 4829386264740394755}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5522,7 +5522,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8802008283457579013}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Rotor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5556,7 +5556,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3668488425031618981}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Graphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5590,7 +5590,7 @@ GameObject:
   - component: {fileID: 169304690707089281}
   - component: {fileID: 245103327512115431}
   - component: {fileID: 5214361150566706195}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5673,7 +5673,7 @@ GameObject:
   - component: {fileID: 187583219722554630}
   - component: {fileID: 6828396957203481249}
   - component: {fileID: 8853170707342225082}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5756,7 +5756,7 @@ GameObject:
   - component: {fileID: 7173902711774169874}
   - component: {fileID: 3941612930474619349}
   - component: {fileID: 3893755426858201702}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5837,7 +5837,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3451060775699080285}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5872,7 +5872,7 @@ GameObject:
   - component: {fileID: 1088115351796472926}
   - component: {fileID: 8826886548744215091}
   - component: {fileID: 3455890008793631480}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5910,16 +5910,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1253ed1e5e89e7d4cb1b037fdec90726, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 300
-  ascendVelocity: 200
+  moveSpeed: 500
+  ascendVelocity: 400
   turningSpeed: 200
   rotorTransform: {fileID: 8802008283457579013}
   rotorRotationSpeed: 270
   rotorParticleSystem: {fileID: 2479262851343315019}
   hookController: {fileID: 8552715306458693005}
-  canMoveHorizontal: 1
-  canRotate: 1
-  canMoveVertical: 1
 --- !u!54 &8826886548744215091
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Boids
 {
@@ -15,6 +16,8 @@ namespace Boids
         private float startHeight;
 
         private bool fullyOpened;
+
+        public UnityEvent onFullyOpened;
 
         private void Start()
         {
@@ -39,6 +42,7 @@ namespace Boids
                 transform.position = position;
                 fullyOpened = true;
                 SubmarineControl.Instance.hookController.clawCollider.ReleaseGrab();
+                onFullyOpened.Invoke();
             }
         }
     }
