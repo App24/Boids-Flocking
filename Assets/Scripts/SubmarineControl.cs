@@ -33,6 +33,29 @@ namespace Boids
         [SerializeField]
         private ParticleSystem rotorParticleSystem;
 
+        [Header("UI")]
+
+        [SerializeField]
+        private float alphaReduce;
+
+        [SerializeField]
+        private CanvasGroup wKeyCanvasGroup;
+
+        [SerializeField]
+        private CanvasGroup sKeyCanvasGroup;
+
+        [SerializeField]
+        private CanvasGroup aKeyCanvasGroup;
+
+        [SerializeField]
+        private CanvasGroup dKeyCanvasGroup;
+
+        [SerializeField]
+        private CanvasGroup spaceKeyCanvasGroup;
+
+        [SerializeField]
+        private CanvasGroup shiftKeyCanvasGroup;
+
         public HookController hookController;
 
         private bool particlePlaying;
@@ -79,6 +102,45 @@ namespace Boids
             //rb.MovePosition(moveVector * moveSpeed * Time.fixedDeltaTime);
 
             var moveVector = new Vector3(Mathf.Clamp(this.moveVector.x, movementCapabilities.HasFlag(MovementCapabilities.RotateLeft) ? -1 : 0, movementCapabilities.HasFlag(MovementCapabilities.RotateRight) ? 1 : 0), Mathf.Clamp(this.moveVector.y, movementCapabilities.HasFlag(MovementCapabilities.Backward) ? -1 : 0, movementCapabilities.HasFlag(MovementCapabilities.Forward) ? 1 : 0), Mathf.Clamp(this.moveVector.z, movementCapabilities.HasFlag(MovementCapabilities.Down) ? -1 : 0, movementCapabilities.HasFlag(MovementCapabilities.Up) ? 1 : 0));
+
+            if (moveVector.y > 0)
+            {
+                var canvasGroup = wKeyCanvasGroup;
+                if (canvasGroup.alpha > 0)
+                    canvasGroup.alpha -= Time.deltaTime * alphaReduce;
+            }
+            else if (moveVector.y < 0)
+            {
+                var canvasGroup = sKeyCanvasGroup;
+                if (canvasGroup.alpha > 0)
+                    canvasGroup.alpha -= Time.deltaTime * alphaReduce;
+            }
+
+            if (moveVector.x > 0)
+            {
+                var canvasGroup = dKeyCanvasGroup;
+                if (canvasGroup.alpha > 0)
+                    canvasGroup.alpha -= Time.deltaTime * alphaReduce;
+            }
+            else if (moveVector.x < 0)
+            {
+                var canvasGroup = aKeyCanvasGroup;
+                if (canvasGroup.alpha > 0)
+                    canvasGroup.alpha -= Time.deltaTime * alphaReduce;
+            }
+
+            if (moveVector.z > 0)
+            {
+                var canvasGroup = spaceKeyCanvasGroup;
+                if (canvasGroup.alpha > 0)
+                    canvasGroup.alpha -= Time.deltaTime * alphaReduce;
+            }
+            else if (moveVector.z < 0)
+            {
+                var canvasGroup = shiftKeyCanvasGroup;
+                if (canvasGroup.alpha > 0)
+                    canvasGroup.alpha -= Time.deltaTime * alphaReduce;
+            }
 
             rb.AddRelativeForce(new Vector3(0, 0, moveVector.y) * moveSpeed);
             rb.AddRelativeForce(new Vector3(0, moveVector.z, 0) * ascendVelocity);

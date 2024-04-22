@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Boids
 {
@@ -12,7 +13,8 @@ namespace Boids
         [System.NonSerialized]
         public bool hooked;
 
-        public System.Action onHooked;
+        public UnityEvent onHooked;
+
         public System.Action onRelease;
 
         public SubmarineControl.MovementCapabilities disableMovement;
