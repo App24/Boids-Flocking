@@ -56,6 +56,9 @@ namespace Boids
         [SerializeField]
         private CanvasGroup shiftKeyCanvasGroup;
 
+        [SerializeField]
+        private CanvasGroup leftClickKeyCanvasGroup;
+
         public HookController hookController;
 
         private bool particlePlaying;
@@ -89,6 +92,7 @@ namespace Boids
                 if (hookController.CanExtendHook)
                 {
                     hookController.ExtendHook();
+                    leftClickKeyCanvasGroup.alpha = 0;
                 }
                 else if (hookController.IsHooked)
                 {
