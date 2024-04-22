@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using TMPro;
 using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -17,6 +18,9 @@ namespace Boids
 
         [SerializeField]
         private ComputeShader boidComputeShader;
+
+        [SerializeField]
+        private TextMeshProUGUI boidCountText;
 
         private ComputeBuffer boidsBuffer;
         private ComputeBuffer boidSettingsBufffer;
@@ -191,6 +195,7 @@ namespace Boids
         {
             boids.Add(boid);
             boidsCount = this.boids.Count;
+            boidCountText.text = $"Boids: {boidsCount}";
             SetBoidsBufferToRecreate();
         }
 
@@ -198,6 +203,7 @@ namespace Boids
         {
             boids.Remove(boid);
             boidsCount = this.boids.Count;
+            boidCountText.text = $"Boids: {boidsCount}";
             SetBoidsBufferToRecreate();
         }
 
@@ -205,6 +211,7 @@ namespace Boids
         {
             this.boids.AddRange(boids);
             boidsCount = this.boids.Count;
+            boidCountText.text = $"Boids: {boidsCount}";
             SetBoidsBufferToRecreate();
         }
 
@@ -215,6 +222,7 @@ namespace Boids
                 this.boids.Remove(boids.ElementAt(i));
             }
             boidsCount = this.boids.Count;
+            boidCountText.text = $"Boids: {boidsCount}";
             SetBoidsBufferToRecreate();
         }
 
